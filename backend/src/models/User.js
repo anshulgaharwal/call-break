@@ -10,6 +10,15 @@ const userSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
+userSchema.pre(['save', 'update', 'updateOne', 'findOneAndUpdate'], function (next) {
+    if (this.getUpdate) {
+        this.set({ updatedAt: Date.now() });
+    } else {
+        this.updatedAt = Date.now();
+    }
+    next();
+});
+
 const User = mongoose.model('User', userSchema);
 
 export default User;
