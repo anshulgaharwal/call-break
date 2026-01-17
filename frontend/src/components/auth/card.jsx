@@ -3,29 +3,33 @@ import React, { useState } from "react";
 import "../../styles/components/Card.css";
 import AuthToggle from "./AuthToggle";
 import { KeyRound, Mail, User } from "lucide-react";
+import { motion } from "framer-motion";
+
 
 const Card = () => {
   const [mode, setMode] = useState("signup");
   return (
-    <div className="card-container">
+    <motion.div layout className="card-container">
       <div className="contain">
         <div className="toggle">
           <AuthToggle mode={mode} setMode={setMode} />
         </div>
         <div className="header">
-          <p>Create an account</p>
+          <p>{mode === "signup" ? "Create an account" : "Welcome Back"}</p>
         </div>
         <div className="input-container">
-          <div className="input-wrap">
-            <span className="input-icon">
-              <User color="white" size={28} />
-            </span>
-            <input
-              className="input-field"
-              type="text"
-              placeholder="Enter your name"
-            />
-          </div>
+          {mode === "signup" && (
+            <div className="input-wrap">
+              <span className="input-icon">
+                <User color="white" size={28} />
+              </span>
+              <input
+                className="input-field"
+                type="text"
+                placeholder="Enter your name"
+              />
+            </div>
+          )}
           <div className="input-wrap">
             <span className="input-icon">
               <Mail color="white" size={28} />
@@ -48,7 +52,7 @@ const Card = () => {
           </div>
         </div>
         <div className="submit">
-          <button>Create Account</button>
+          <button>{mode === "signup" ? "Create Account" : "Sign In"}</button>
         </div>
         <div className="part">
           <div className="line"></div>
@@ -72,7 +76,7 @@ const Card = () => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
