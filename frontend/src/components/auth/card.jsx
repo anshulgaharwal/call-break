@@ -4,84 +4,24 @@ import "../../styles/components/Card.css";
 import AuthToggle from "./AuthToggle";
 import { KeyRound, Mail, User } from "lucide-react";
 import { motion } from "framer-motion";
-
+import { useAuth } from "../../context/AuthContext";
 const Card = () => {
-  const [mode, setMode] = useState("signup");
+  const [mode, setMode] = useState("signin");
   const [formData, setFormData] = useState({
     name: "",
     userName: "",
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { login, register, loading, error } = useAuth();
 
   const handleSubmit = async () => {
-    setLoading(true);
-    setError("");
-    try {
       if (mode === "signup") {
-        const signUpRes = await fetch(
-          "http://localhost:5000/api/auth/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: formData.name,
-              username: formData.userName,
-              email: formData.email,
-              password: formData.password,
-            }),
-          },
-        );
-        if (!signUpRes.ok) {
-          const data = await signUpRes.json();
-          throw new Error(data.message || "Signup failed");
-        }
-        // const signInRes = await fetch("http://localhost:5000/api/auth/login", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     email: formData.email,
-        //     password: formData.password,
-        //   }),
-        // });
-        const signUpData = await signUpRes.json();
-        if (!signUpRes.ok) {
-          throw new Error(signUpData.message || "Auto login failed");
-        }
-        localStorage.setItem("token", signUpData.token);
-        localStorage.setItem("user", JSON.stringify(signUpData.user));
-        console.log("Logged in:", signUpData.user);
+        await register(formData.name, formData.userName, formData.email, formData.password);
       }
       if (mode === "signin") {
-        const res = await fetch("http://localhost:5000/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.message || "Signin failed");
-        }
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        console.log("Logged in:", data.user);
+        await login(formData.email, formData.password);
       }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
   };
   return (
     <motion.div layout className="card-container">
@@ -183,7 +123,7 @@ const Card = () => {
                 : "Sign In"}
           </button>
         </div>
-        <div className="part">
+        {/* <div className="part">
           <div className="line"></div>
           <div className="or">OR</div>
           <div className="line"></div>
@@ -203,7 +143,7 @@ const Card = () => {
               alt="phone"
             />
           </button>
-        </div>
+        </div> */}
       </div>
     </motion.div>
   );
