@@ -5,7 +5,7 @@ import AuthToggle from "./AuthToggle";
 import { KeyRound, Mail, User } from "lucide-react";
 import { motion } from "framer-motion";
 
-
+ 
 const Card = () => {
   const [mode, setMode] = useState("signup");
   return (
