@@ -84,3 +84,17 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Sign in failed" });
   }
 };
+
+export const getUser = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    res.status(200).json({ 
+      username: user.username,
+      name: user.name,
+      email: user.email,
+     });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to get user" });
+  }
+};
