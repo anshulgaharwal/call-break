@@ -86,8 +86,10 @@ export const login = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
+  console.log('eeeeee');
+  const email = req.user.email;
+  
   try {
-    const { email } = req.body;
     const user = await User.findOne({ email });
     res.status(200).json({ 
       username: user.username,

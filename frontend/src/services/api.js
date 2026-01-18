@@ -41,3 +41,21 @@ export const register = async (name, username, email, password) => {
     }
     return data;
 };
+
+
+// get user
+export const getUser = async () => {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_URL}/auth/profile`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(data.message || "Get user failed");
+    }
+    return data;
+};

@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from "react";
-import { login as loginApi, register as registerApi } from "../services/api";
+import { createContext, useContext, useState, useEffect } from "react";
+import { login as loginApi, register as registerApi, getUser as getUserApi } from "../services/api";
 import Login from "../pages/Login";
 
 const AuthContext = createContext();
@@ -37,10 +37,28 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const initAuth = async () => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            const user = await getUserApi();
+            console.log(user);
+
+            setUser(user);
+        } else {
+            setUser(null);
+        }
+        setLoading(false);
+        setError(null);
+    };
+
     const logout = () => {
         localStorage.removeItem("token");
         setUser(null);
     };
+
+    useEffect(() => {
+        initAuth();
+    }, []);
 
     return (
         <AuthContext.Provider
@@ -52,9 +70,9 @@ export const AuthProvider = ({ children }) => {
                 error,
                 logout,
             }}
-        >   
+        >
             {
-             user ? children : <Login />
+                user ? children : <Login />
             }
         </AuthContext.Provider>
     );

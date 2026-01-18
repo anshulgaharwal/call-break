@@ -5,6 +5,7 @@ import AuthToggle from "./AuthToggle";
 import { KeyRound, Mail, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
+
 const Card = () => {
   const [mode, setMode] = useState("signin");
   const [formData, setFormData] = useState({
