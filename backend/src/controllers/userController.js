@@ -9,23 +9,24 @@ import User from "../models/User.js";
  */
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, username, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({
         message: "All fields required",
       });
     }
 
-    const userExits = await User.findOne({ email });
-    if (userExits) {
-      return res.status(409).json({
-        message: "User already exits, Sign in instead",
-      });
-    }
+    // const userExits = await User.findOne({ email });
+    // if (userExits) {
+    //   return res.status(409).json({
+    //     message: "User already exits, Sign in instead",
+    //   });
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = User.create({
+      username,
       name,
       email,
       password: hashedPassword,
@@ -34,6 +35,8 @@ export const register = async (req, res) => {
       message: "Account created successfully",
     });
   } catch (err) {
+    console.log(err);
+
     res.status(500).json({
       message: "Sign up failed, try again later",
     });
@@ -50,6 +53,9 @@ export const login = async (req, res) => {
         message: "User not find, try Sign up",
       });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     const isMatch = await bcrypt.compare(password, hashedPassword);
     if (!isMatch) {
       return res.status(401).json({
