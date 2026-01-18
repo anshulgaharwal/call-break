@@ -15,6 +15,7 @@ const Card = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
@@ -39,23 +40,23 @@ const Card = () => {
           const data = await signUpRes.json();
           throw new Error(data.message || "Signup failed");
         }
-        const signInRes = await fetch("http://localhost:5000/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
-        const signInData = await signInRes.json();
-        if (!signInRes.ok) {
-          throw new Error(signInData.message || "Auto login failed");
+        // const signInRes = await fetch("http://localhost:5000/api/auth/login", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({
+        //     email: formData.email,
+        //     password: formData.password,
+        //   }),
+        // });
+        const signUpData = await signUpRes.json();
+        if (!signUpRes.ok) {
+          throw new Error(signUpData.message || "Auto login failed");
         }
-        localStorage.setItem("token", signInData.token);
-        localStorage.setItem("user", JSON.stringify(signInData.user));
-        console.log("Logged in:", signInData.user);
+        localStorage.setItem("token", signUpData.token);
+        localStorage.setItem("user", JSON.stringify(signUpData.user));
+        console.log("Logged in:", signUpData.user);
       }
       if (mode === "signin") {
         const res = await fetch("http://localhost:5000/api/auth/login", {
