@@ -1,3 +1,4 @@
+//Navbar.jsx
 import React from 'react'
 import '../../styles/components/home/navber.css'
 import { useAuth } from '../../context/AuthContext'

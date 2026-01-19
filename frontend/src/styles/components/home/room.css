@@ -11,3 +11,10 @@
     justify-content: center;
     align-items: center;
 }
+
+.header-room{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(229, 243, 255);
+}
