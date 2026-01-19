@@ -23,7 +23,7 @@ const Home = () => {
           {activeTab === 1 && <Room key={"1"} type="create" setActiveTab={setActiveTab} />}
           {activeTab === 2 && <Room key={"2"} type="join" setActiveTab={setActiveTab} />}
           {activeTab === 3 && <RoomPass key={"3"} type="passRequired" setActiveTab={setActiveTab} />}
-          {activeTab === 4 && <Lobby key={"4"} type="lobby" />}
+          {activeTab === 4 && <Lobby key={"4"} type="lobby" setActiveTab={setActiveTab} />}
         </div>
       </div>
     </>

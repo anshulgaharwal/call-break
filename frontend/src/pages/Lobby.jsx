@@ -1,8 +1,11 @@
 import React from 'react'
+import Button from '../components/common/Button'
 
-const Lobby = () => {
+const Lobby = ({setActiveTab}) => {
   return (
-    <div>Lobby</div>
+    <div>
+      <Button onClick={() => setActiveTab(0)}>Previous page</Button>
+    </div>
   )
 }
 
