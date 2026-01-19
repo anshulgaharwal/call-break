@@ -1,0 +1,8 @@
+.room-input input{
+    height: 28px;
+    margin: 18px 0;
+    background-color: #fff;
+    border: none;
+    outline: none;
+    text-align: center;
+}

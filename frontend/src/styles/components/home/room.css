@@ -1,0 +1,13 @@
+.room-container{
+    background-color: #923d3d;
+    height: auto;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.input-field-room{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

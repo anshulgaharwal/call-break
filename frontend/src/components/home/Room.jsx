@@ -2,25 +2,28 @@ import React from "react";
 import Input from "../room/input";
 import { Divide } from "lucide-react";
 import Button from "../common/Button";
+import "../../styles/components/home/room.css";
 
 const Room = ({ type }) => {
   return (
-    <div>
+    <div className="room-container">
       <div className="header-room">
         <h2>{type === "create" ? "Create Room" : "Join Room"}</h2>
       </div>
-      {type === "create" && (
-        <div className="create-room">
-          <Input placeholder="Set room password (optional)" />
-          <Button>Create Room</Button>
-        </div>
-      )}
-      {type === "join" && (
-        <div className="join-room">
-          <Input placeholder="Enter Room ID" />
-          <Button>Join Room</Button>
-        </div>
-      )}
+      <div className="input-field-room">
+        {type === "create" && (
+          <>
+            <Input placeholder="Set room password (optional)" />
+            <Button>Create Room</Button>
+          </>
+        )}
+        {type === "join" && (
+          <>
+            <Input placeholder="Enter Room ID" />
+            <Button>Join Room</Button>
+          </>
+        )}
+      </div>
     </div>
   );
 };

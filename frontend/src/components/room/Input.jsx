@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import "../../styles/components/room/Input.css";
 
-const Input = () => {
+const Input = ({ placeholder }) => {
   return (
-    <div>Input</div>
-  )
-}
+    <div className="room-input">
+      <input type="text" placeholder={placeholder} />
+    </div>
+  );
+};
 
-export default Input
+export default Input;
