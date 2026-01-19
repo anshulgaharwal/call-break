@@ -60,9 +60,9 @@ export const login = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    // const hashedPassword = await bcrypt.hash(password, 12);
 
-    const isMatch = await bcrypt.compare(password, hashedPassword);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({
         message: "Wrong password, try again",
@@ -86,7 +86,6 @@ export const login = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  console.log('eeeeee');
   const email = req.user.email;
   
   try {
