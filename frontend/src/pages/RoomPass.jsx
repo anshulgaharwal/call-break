@@ -14,7 +14,7 @@ const RoomPass = ({setActiveTab}) => {
         <div>
           <Input placeholder="password" />
         </div>
-        <Button>continue</Button>
+        <Button onClick={() => setActiveTab(4)}>continue</Button>
         <div className="info">
           <p>
             This room is protected by password. Please enter password to enter
