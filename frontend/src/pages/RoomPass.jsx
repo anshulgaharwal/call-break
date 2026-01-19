@@ -1,9 +1,29 @@
-import React from 'react'
+import React from "react";
+import Input from "../components/room/input";
+import "../styles/pages/RoomPass.css";
+import Button from "../components/common/Button";
 
-const RoomPass = () => {
+const RoomPass = ({setActiveTab}) => {
   return (
-    <div>RoomPass</div>
-  )
-}
+    <div className="pass-contain">
+      <div>
+        <Button onClick={() => setActiveTab(0)}>Previous page</Button>
+      </div>
+      <div className="main-pass">
+        <div className="header">Enter Password</div>
+        <div>
+          <Input placeholder="password" />
+        </div>
+        <Button>continue</Button>
+        <div className="info">
+          <p>
+            This room is protected by password. Please enter password to enter
+            the room
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default RoomPass
+export default RoomPass;

@@ -1,0 +1,56 @@
+.invite-parent{
+    background-color: rgb(215, 215, 215);
+    margin: 25px 40px;
+    height: 100%;
+    max-width: 500px;
+    width: 80%;
+}
+
+.invite-header{
+    background-color: rgb(252, 80, 80);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+}
+
+.invite{
+    background-color: aliceblue;
+    height: 80px;
+    display: flex;
+}
+
+.info{
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action{
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.accept{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.accept img{
+    width: 45px;
+    cursor: pointer;
+}
+
+.decline{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.decline img{
+    cursor: pointer;
+    width: 45px;
+}
