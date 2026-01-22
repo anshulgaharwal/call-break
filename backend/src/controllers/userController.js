@@ -27,7 +27,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
 
-    jwt.sign(
+    const token = jwt.sign(
       {
         username: user.username,
         email: user.email,
@@ -71,7 +71,7 @@ export const login = async (req, res) => {
         message: "Wrong password, try again",
       });
     }
-    jwt.sign(
+    const token = jwt.sign(
       {
         username: user.username,
         email: user.email,

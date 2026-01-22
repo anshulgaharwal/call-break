@@ -1,4 +1,5 @@
 const API_URL = "http://localhost:5000/api";
+const ROOM_URL = "http://localhost:5000/room";
 
 // login
 export const login = async (email, password) => {
@@ -21,10 +22,12 @@ export const login = async (email, password) => {
 
 //create room
 export const create = async (password) => {
-  const res = await fetch(`${API_URL}/create`, {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${ROOM_URL}/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       password,
@@ -40,10 +43,12 @@ export const create = async (password) => {
 
 // join ROOM
 export const join = async (roomId) => {
-  const res = await fetch(`${API_URL}/join`, {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${ROOM_URL}/join`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       roomId,
