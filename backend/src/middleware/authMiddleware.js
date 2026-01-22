@@ -12,7 +12,10 @@ export const authMiddleware = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-    req.user = user;
+    req.user = {
+      username: decoded.username,
+      email: decoded.email,
+    };
     next();
   } catch (err) {
     return res.status(500).json({ message: err.message || "Unauthorized" });

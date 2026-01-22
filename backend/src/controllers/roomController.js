@@ -18,7 +18,7 @@ export const create = async (req, res) => {
 
     while (exists) {
       roomId = generateRoomId();
-      exists = await Room.exists({ roomId });
+      exists = await Room.exists({ id: roomId });
     }
 
     let hashedPassword = null;
@@ -37,17 +37,39 @@ export const create = async (req, res) => {
     });
 
     res.status(201).json({
-        message: "Room created",
-        token,
-        room: {
-            roomId: room.roomId,
-            isPrivate: 
-        }
-    })
-  } catch (err) {}
+      message: "Room created",
+      room: {
+        roomId: room.id,
+        isPrivate,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create room" });
+  }
 };
 
 export const join = async (req, res) => {
   try {
+    const { roomId } = req.body;
+    const room = await Room.findOne({ id: roomId });
+
+    if (!room) {
+      return res.status(401).json({
+        message: "No room exist with this Id",
+      });
+    }
+
+    if (room.password) {
+      return res.status(200).json({
+        requiredPassword: true,
+        roomId: room.id,
+      });
+    }
+
+    return res.status(200).json({
+      requiredPassword: false,
+      roomId: room.id,
+    });
   } catch (err) {}
 };

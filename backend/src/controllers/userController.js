@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-
 export const register = async (req, res) => {
   try {
     const { name, username, email, password } = req.body;
@@ -28,10 +27,14 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
 
-    
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    jwt.sign(
+      {
+        username: user.username,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
 
     res.status(201).json({
       message: "Account created successfully",
@@ -68,9 +71,14 @@ export const login = async (req, res) => {
         message: "Wrong password, try again",
       });
     }
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    jwt.sign(
+      {
+        username: user.username,
+        email: user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
 
     res.status(200).json({
       token,
@@ -87,14 +95,14 @@ export const login = async (req, res) => {
 
 export const getUser = async (req, res) => {
   const email = req.user.email;
-  
+
   try {
     const user = await User.findOne({ email });
-    res.status(200).json({ 
+    res.status(200).json({
       username: user.username,
       name: user.name,
       email: user.email,
-     });
+    });
   } catch (err) {
     res.status(500).json({ message: "Failed to get user" });
   }

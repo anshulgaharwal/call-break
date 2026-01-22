@@ -6,8 +6,8 @@ const roomSchema = new mongoose.Schema({
     password: { type: String, required: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    admin: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    users: [{type: String}],
+    admin: { type: String, required: true },
 });
 
 const Room = mongoose.model('Room', roomSchema);
