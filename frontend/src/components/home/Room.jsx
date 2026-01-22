@@ -1,11 +1,23 @@
 //Room.jsx
-import React from "react";
+import React, { useState } from "react";
 import Input from "../room/input";
 import { Divide } from "lucide-react";
 import Button from "../common/Button";
 import "../../styles/components/home/room.css";
+import { create, join } from "../../services/api";
 
-const Room = ({ type, setActiveTab }) => {
+const Room = ({ type }) => {
+  const [formData, setFormData] = useState({
+    roomId: "",
+    password: "",
+  });
+  const handleSubmit = async () => {
+    if (type === "create") {
+      await create(formData.password);
+    } else {
+      await join(formData.roomId);
+    }
+  };
   return (
     <div className="room-container">
       <div className="header-room">
@@ -14,14 +26,32 @@ const Room = ({ type, setActiveTab }) => {
       <div className="input-field-room">
         {type === "create" && (
           <>
-            <Input placeholder="Set room password (optional)" />
-            <Button onClick={() => setActiveTab(4)}>Create Room</Button>
+            <Input
+              placeholder="Set room password (optional)"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  password: e.target.value,
+                })
+              }
+            />
+            <Button onClick={handleSubmit}>Create Room</Button>
           </>
         )}
         {type === "join" && (
           <>
-            <Input placeholder="Enter Room ID" />
-            <Button onClick={() => setActiveTab(3)}>Join Room</Button>
+            <Input
+              placeholder="Enter Room ID"
+              value={formData.roomId}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  roomId: e.target.value,
+                })
+              }
+            />
+            <Button onClick={handleSubmit}>Join Room</Button>
           </>
         )}
       </div>
