@@ -6,14 +6,17 @@ import Button from "../common/Button";
 import "../../styles/components/home/room.css";
 import { create, join } from "../../services/api";
 
-const Room = ({ type }) => {
+const Room = ({ type, setActiveTab }) => {
   const [formData, setFormData] = useState({
     roomId: "",
     password: "",
   });
   const handleSubmit = async () => {
     if (type === "create") {
-      await create(formData.password);
+
+      const data = await create(formData.password);
+      console.log("Room created:", data.room.roomId);
+      setActiveTab(4);
     } else {
       await join(formData.roomId);
     }
