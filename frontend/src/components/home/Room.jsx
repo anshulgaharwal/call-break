@@ -16,6 +16,7 @@ const Room = ({ type, setActiveTab, setCurrRoomId }) => {
 
       const data = await create(formData.password);
       console.log("Room created:", data.room.roomId);
+      localStorage.setItem("roomId", data.room.roomId); 
       setCurrRoomId(data.room.roomId);
       setActiveTab(4);
     } else {

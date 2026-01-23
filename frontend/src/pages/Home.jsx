@@ -1,5 +1,5 @@
 //Home.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Invitations from "../components/home/Invitations";
 import Room from "../components/home/Room";
 import Navbar from "../components/home/Navbar";
@@ -10,6 +10,15 @@ import Lobby from "./Lobby";
 const Home = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [currRoomId, setCurrRoomId] = useState("");
+
+  useEffect(() => {
+    const savedRoomId = localStorage.getItem("roomId");
+    if (savedRoomId) {
+      setCurrRoomId(savedRoomId);
+      setActiveTab(4);
+    }
+  }, []);
+
   return (
     <>
       <div className="main-home">

@@ -8,12 +8,21 @@ const Lobby = ({ setActiveTab, roomId }) => {
   const [admin, setAdmin] = useState("");
 
   const handlePrev = async () => {
-    const data = await deleteRoom(roomId);
-    console.log(data.message);
-    setActiveTab(0);
+    try {
+      if (user.username === admin) {
+        const data = await deleteRoom(roomId);
+        console.log(data.message);
+      }
+      localStorage.removeItem("roomId");
+      setActiveTab(0);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   useEffect(() => {
+    if (!roomId) return;
+
     const fetchRoom = async () => {
       try {
         const data = await getRoomDetails(roomId);
