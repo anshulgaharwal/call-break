@@ -1,9 +1,10 @@
 import React from 'react'
 import Button from '../components/common/Button'
+import { deleteRoom } from '../services/api';
 
-const Lobby = ({setActiveTab}) => {
+const Lobby = ({setActiveTab, roomId}) => {
   const handlePrev = async () =>{
-    const data = await deleteRoom();
+    const data = await deleteRoom(roomId);
     console.log(data.message);
     setActiveTab(0)
   }

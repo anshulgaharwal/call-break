@@ -73,3 +73,35 @@ export const join = async (req, res) => {
     });
   } catch (err) {}
 };
+
+export const deleteRoom = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+    const username = req.user.username;
+
+    const room = await Room.findOne({ id: roomId });
+
+    if (!room) {
+      return res.status(404).json({
+        message: "Room not found",
+      });
+    }
+
+    if (room.admin === username) {
+      await Room.deleteOne({ id: roomId });
+
+      return res.status(200).json({
+        message: "Room deleted because admin left",
+      });
+    }
+
+    return res.status(200).json({
+      message: "User left room",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to leave room",
+    });
+  }
+};

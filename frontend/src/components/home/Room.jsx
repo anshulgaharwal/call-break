@@ -6,7 +6,7 @@ import Button from "../common/Button";
 import "../../styles/components/home/room.css";
 import { create, join } from "../../services/api";
 
-const Room = ({ type, setActiveTab }) => {
+const Room = ({ type, setActiveTab, setCurrRoomId }) => {
   const [formData, setFormData] = useState({
     roomId: "",
     password: "",
@@ -16,6 +16,7 @@ const Room = ({ type, setActiveTab }) => {
 
       const data = await create(formData.password);
       console.log("Room created:", data.room.roomId);
+      setCurrRoomId(data.room.roomId);
       setActiveTab(4);
     } else {
       await join(formData.roomId);

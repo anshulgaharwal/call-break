@@ -64,7 +64,26 @@ export const join = async (roomId) => {
   return data;
 };
 
-
+export const deleteRoom = async (roomId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${ROOM_URL}/delete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      roomId,
+    }),
+  });
+  const data = await res.json();
+  if(!res.ok){
+    throw new Error(
+      data.message || "Unable to delete Room please try again later",
+    );
+  }
+  return data;
+};
 
 // register
 export const register = async (name, username, email, password) => {

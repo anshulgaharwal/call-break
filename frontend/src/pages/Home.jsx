@@ -9,7 +9,7 @@ import Lobby from "./Lobby";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState(0);
-
+  const [currRoomId, setCurrRoomId] = useState("");
   return (
     <>
       <div className="main-home">
@@ -20,10 +20,37 @@ const Home = () => {
         </div>
         <div className="show-page">
           {activeTab === 0 && <Invitations key={"0"} />}
-          {activeTab === 1 && <Room key={"1"} type="create" setActiveTab={setActiveTab} />}
-          {activeTab === 2 && <Room key={"2"} type="join" setActiveTab={setActiveTab} />}
-          {activeTab === 3 && <RoomPass key={"3"} type="passRequired" setActiveTab={setActiveTab} />}
-          {activeTab === 4 && <Lobby key={"4"} type="lobby" setActiveTab={setActiveTab} />}
+          {activeTab === 1 && (
+            <Room
+              key={"1"}
+              type="create"
+              setActiveTab={setActiveTab}
+              setCurrRoomId={setCurrRoomId}
+            />
+          )}
+          {activeTab === 2 && (
+            <Room
+              key={"2"}
+              type="join"
+              setActiveTab={setActiveTab}
+              setCurrRoomId={setCurrRoomId}
+            />
+          )}
+          {activeTab === 3 && (
+            <RoomPass
+              key={"3"}
+              type="passRequired"
+              setActiveTab={setActiveTab}
+            />
+          )}
+          {activeTab === 4 && (
+            <Lobby
+              key={"4"}
+              type="lobby"
+              setActiveTab={setActiveTab}
+              roomId={currRoomId}
+            />
+          )}
         </div>
       </div>
     </>
