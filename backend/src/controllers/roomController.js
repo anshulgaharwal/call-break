@@ -105,3 +105,30 @@ export const deleteRoom = async (req, res) => {
     });
   }
 };
+
+export const getRoomDetails = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+
+    const room = await Room.findOne({ id: roomId });
+
+    if (!room) {
+      return res.status(404).json({
+        message: "Room not found",
+      });
+    }
+
+    res.status(200).json({
+      roomId: room.id,
+      admin: room.admin,
+      users: room.users,
+      maxPlayers: 4,
+      currentPlayers: room.users.length,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to fetch room details",
+    });
+  }
+};
