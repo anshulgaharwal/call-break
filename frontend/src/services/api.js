@@ -64,6 +64,8 @@ export const join = async (roomId) => {
   return data;
 };
 
+
+
 // register
 export const register = async (name, username, email, password) => {
   const res = await fetch(`${API_URL}/auth/register`, {

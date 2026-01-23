@@ -2,9 +2,14 @@ import React from 'react'
 import Button from '../components/common/Button'
 
 const Lobby = ({setActiveTab}) => {
+  const handlePrev = async () =>{
+    const data = await deleteRoom();
+    console.log(data.message);
+    setActiveTab(0)
+  }
   return (
     <div>
-      <Button onClick={() => setActiveTab(0)}>Previous page</Button>
+      <Button onClick={handlePrev}>Previous page</Button>
     </div>
   )
 }
