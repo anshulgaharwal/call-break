@@ -77,7 +77,7 @@ export const deleteRoom = async (roomId) => {
     }),
   });
   const data = await res.json();
-  if(!res.ok){
+  if (!res.ok) {
     throw new Error(
       data.message || "Unable to delete Room please try again later",
     );
@@ -120,5 +120,18 @@ export const getUser = async () => {
   if (!res.ok) {
     throw new Error(data.message || "Get user failed");
   }
+  return data;
+};
+
+//room details
+export const getRoomDetails = async (roomId) => {
+  const res = await fetch(`${ROOM_URL}/${roomId}`);
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to get room details");
+  }
+
   return data;
 };
