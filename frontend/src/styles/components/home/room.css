@@ -1,5 +1,5 @@
 .room-container{
-    background-color: #923d3d;
+    background-color: var(--surface);
     height: auto;
     padding: 20px;
     border-radius: 8px;
@@ -16,5 +16,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: rgb(229, 243, 255);
+    color: var(--text-main);
 }
