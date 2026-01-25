@@ -3,6 +3,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import userRoutes from './routes/userRoutes.js';
 import roomRoutes from './routes/roomRoutes.js';
+import invitationRoutes from './routes/invitationRoutes.js';
 import { connectDB } from './config/database.js';
 
 connectDB();
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', userRoutes);
 app.use('/room', roomRoutes);
+app.use('/invitation', invitationRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Call Break API Server' });

@@ -155,3 +155,133 @@ export const verifyRoomPassword = async (roomId, password) => {
 
   return data;
 };
+
+
+export const createInvitation = async (receiverId, roomId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/invitation/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ receiverId, roomId }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to create invitation");
+  }
+
+  return data;
+};
+
+
+export const acceptInvitation = async (invitationId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/invitation/accept`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ invitationId }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to accept invitation");
+  }
+
+  return data;
+};
+  
+
+export const rejectInvitation = async (invitationId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/invitation/reject`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ invitationId }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to reject invitation");
+  }
+
+  return data;
+};
+
+
+export const getInvitations = async () => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/invitation/get`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to get invitations");
+  }
+
+  return data;
+};
+
+
+export const getInvitationsSent = async () => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/invitation/getSent`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to get invitations");
+  }
+
+  return data;
+};
+
+
+export const deleteInvitation = async (invitationId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/invitation/delete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ invitationId }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to delete invitation");
+  }
+
+  return data;
+};
