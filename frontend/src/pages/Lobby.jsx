@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import Input from "../components/room/Input";
-import { deleteRoom, getRoomDetails } from "../services/api";
+import { deleteRoom, getRoomDetails, createInvitation, getInvitationsSent, deleteInvitation } from "../services/api";
 import { useAuth } from "../context/AuthContext.jsx"
 import "../styles/pages/Lobby.css";
 
@@ -9,6 +9,7 @@ const Lobby = ({ setActiveTab, roomId }) => {
   const { user } = useAuth();
 
   const [players, setPlayers] = useState([]);
+  const [invitations, setInvitations] = useState([]);
   const [admin, setAdmin] = useState("");
 
   const handlePrev = async () => {
@@ -24,19 +25,47 @@ const Lobby = ({ setActiveTab, roomId }) => {
     }
   };
 
+  const handleSendInvitation = async () => {
+    try {
+      const data = await createInvitation(user.username, roomId);
+      console.log(data.message);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const handleDeleteInvitation = async (invitationId) => {
+    try {
+      const data = await deleteInvitation(invitationId);
+      console.log(data.message);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   useEffect(() => {
     if (!roomId) return;
 
     const fetchRoom = async () => {
       try {
         const data = await getRoomDetails(roomId);
-        setPlayers([...data.users, ...data.users, ...data.users, ...data.users]);
+        setPlayers(data.users);
         setAdmin(data.admin);
       } catch (err) {
         console.error(err.message);
       }
     };
     fetchRoom();
+
+    const fetchInvitations = async () => {
+      try {
+        const data = await getInvitationsSent();
+        setInvitations(data);
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+    fetchInvitations();
   }, [roomId]);
 
   return (
@@ -66,7 +95,18 @@ const Lobby = ({ setActiveTab, roomId }) => {
 
           <div className="send-invitation">
             <Input placeholder="Enter username" />
-            <Button>Send Invitation</Button>
+            <Button onClick={handleSendInvitation}>Send Invitation</Button>
+          </div>
+          <div className="sent-invitations">
+            <h2>Sent Invitations</h2>
+            <ul>
+              {invitations.map((invitation, index) => (
+                <li key={index}>
+                  {invitation.username}
+                  <Button onClick={() => handleDeleteInvitation(invitation.id)}>Delete</Button>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <h2>Game is about to start</h2>

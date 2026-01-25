@@ -1,6 +1,6 @@
-import Invitation from "../models/Invitation";
-import User from "../models/User";
-import Room from "../models/Room";
+import Invitation from "../models/Invitation.js";
+import User from "../models/User.js";
+import Room from "../models/Room.js";
 
 export const createInvitation = async (req, res) => {
     const userId = req.user.id;

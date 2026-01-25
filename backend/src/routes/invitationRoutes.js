@@ -1,5 +1,5 @@
 import express from "express";
-import { createInvitation, acceptInvitation, rejectInvitation, getInvitations, getInvitationsSent, deleteInvitation } from "../controllers/invitationController";
+import { createInvitation, acceptInvitation, rejectInvitation, getInvitations, getInvitationsSent, deleteInvitation } from "../controllers/invitationController.js";
 
 const router = express.Router();
 

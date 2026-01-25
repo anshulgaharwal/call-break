@@ -1,5 +1,5 @@
 .invite-parent{
-    background-color: rgb(215, 215, 215);
+    background-color: var(--surface);
     margin: 25px 40px;
     height: 100%;
     max-width: 500px;
@@ -7,7 +7,8 @@
 }
 
 .invite-header{
-    background-color: rgb(252, 80, 80);
+    background-color: var(--primary);
+    color: var(--surface);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,7 +16,7 @@
 }
 
 .invite{
-    background-color: aliceblue;
+    background-color: var(--surface);
     height: 80px;
     display: flex;
 }
