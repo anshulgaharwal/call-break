@@ -13,14 +13,21 @@ const Room = ({ type, setActiveTab, setCurrRoomId }) => {
   });
   const handleSubmit = async () => {
     if (type === "create") {
-
       const data = await create(formData.password);
       console.log("Room created:", data.room.roomId);
-      localStorage.setItem("roomId", data.room.roomId); 
+      localStorage.setItem("roomId", data.room.roomId);
       setCurrRoomId(data.room.roomId);
       setActiveTab(4);
     } else {
-      await join(formData.roomId);
+      const data = await join(formData.roomId);
+      localStorage.setItem("roomId", data.roomId);
+      setCurrRoomId(data.roomId);
+
+      if (data.requiredPassword) {
+        setActiveTab(3); 
+      } else {
+        setActiveTab(4); 
+      }
     }
   };
   return (

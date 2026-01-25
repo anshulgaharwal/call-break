@@ -54,7 +54,6 @@ export const join = async (roomId) => {
       roomId,
     }),
   });
-
   const data = await res.json();
   if (!res.ok) {
     throw new Error(
@@ -131,6 +130,27 @@ export const getRoomDetails = async (roomId) => {
 
   if (!res.ok) {
     throw new Error(data.message || "Failed to get room details");
+  }
+
+  return data;
+};
+
+export const verifyRoomPassword = async (roomId, password) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${ROOM_URL}/verify-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ roomId, password }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Wrong password");
   }
 
   return data;

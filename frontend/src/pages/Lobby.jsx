@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import { deleteRoom, getRoomDetails } from "../services/api";
+import { useAuth } from "../context/AuthContext.jsx"
 import "../styles/pages/Lobby.css";
 
 const Lobby = ({ setActiveTab, roomId }) => {
+  const { user } = useAuth();
+  
   const [players, setPlayers] = useState([]);
   const [admin, setAdmin] = useState("");
 

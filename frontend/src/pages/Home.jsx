@@ -50,6 +50,7 @@ const Home = () => {
               key={"3"}
               type="passRequired"
               setActiveTab={setActiveTab}
+              setCurrRoomId={setCurrRoomId}
             />
           )}
           {activeTab === 4 && (

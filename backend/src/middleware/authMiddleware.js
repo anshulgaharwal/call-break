@@ -9,6 +9,7 @@ export const authMiddleware = async (req, res, next) => {
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ email: decoded.email });
+    
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
@@ -18,6 +19,6 @@ export const authMiddleware = async (req, res, next) => {
     };
     next();
   } catch (err) {
-    return res.status(500).json({ message: err.message || "Unauthorized" });
+    return res.status(500).json({ message: err.message || "hoho" });
   }
 };

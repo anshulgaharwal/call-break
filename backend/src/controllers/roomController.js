@@ -53,6 +53,7 @@ export const join = async (req, res) => {
   try {
     const { roomId } = req.body;
     const room = await Room.findOne({ id: roomId });
+    console.log(room);
 
     if (!room) {
       return res.status(401).json({
@@ -130,5 +131,35 @@ export const getRoomDetails = async (req, res) => {
     res.status(500).json({
       message: "Failed to fetch room details",
     });
+  }
+};
+
+export const verifyPassword = async (req, res) => {
+  try {
+    const { roomId, password } = req.body;
+    const username = req.user.username;
+
+    const room = await Room.findOne({ id: roomId });
+
+    const isMatch = await bcrypt.compare(password, room.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Incorrect password",
+      });
+    }
+
+    if (!room.users.includes(username)) {
+      room.users.push(username);
+      await room.save();
+    }
+
+    res.status(200).json({
+      message: "Password verified",
+      roomId: room.id,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to verify password" });
   }
 };
