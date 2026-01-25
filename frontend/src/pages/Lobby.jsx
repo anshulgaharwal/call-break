@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/common/Button";
+import Input from "../components/room/Input";
 import { deleteRoom, getRoomDetails } from "../services/api";
 import { useAuth } from "../context/AuthContext.jsx"
 import "../styles/pages/Lobby.css";
 
 const Lobby = ({ setActiveTab, roomId }) => {
   const { user } = useAuth();
-  
+
   const [players, setPlayers] = useState([]);
   const [admin, setAdmin] = useState("");
 
@@ -29,7 +30,7 @@ const Lobby = ({ setActiveTab, roomId }) => {
     const fetchRoom = async () => {
       try {
         const data = await getRoomDetails(roomId);
-        setPlayers(data.users);
+        setPlayers([...data.users, ...data.users, ...data.users, ...data.users]);
         setAdmin(data.admin);
       } catch (err) {
         console.error(err.message);
@@ -40,24 +41,42 @@ const Lobby = ({ setActiveTab, roomId }) => {
 
   return (
     <div className="lobby-main">
-      <div>
-        <Button onClick={handlePrev}>Previous page</Button>
+      <div className="top">
+        <div className="left">
+          <Button onClick={handlePrev}>Previous page</Button>
+        </div>
+        <div className="right">
+          <h2>Room ID: {roomId}</h2>
+        </div>
       </div>
-      <div>
-        <h2>Game is about to start</h2>
-        <ul>
-          {players.map((player, index) => (
-            <li key={index}>
-              {player}
-              {player === admin && " (Admin)"}
-            </li>
-          ))}
-        </ul>
+      <div className="middle">
+        <div className="left">
+          <h2>Players</h2>
+          <ul>
+            {players.map((player, index) => (
+              <li key={index}>
+                {player}
+                {player === admin && " (Admin)"}
+              </li>
+            ))}
+          </ul>
 
-        {players.length < 4 && <p>Waiting for players...</p>}
-        {players.length === 4 && <p>Room is full</p>}
+        </div>
+        <div className="right">
+
+          <div className="send-invitation">
+            <Input placeholder="Enter username" />
+            <Button>Send Invitation</Button>
+          </div>
+
+          <h2>Game is about to start</h2>
+          {players.length < 4 && <p>Waiting for players...</p>}
+          {players.length === 4 && <p>Room is full</p>}
+        </div>
       </div>
-      <div></div>
+      <div className="bottom">
+
+      </div>
     </div>
   );
 };

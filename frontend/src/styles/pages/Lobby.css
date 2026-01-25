@@ -1,4 +1,76 @@
 /* TODO: Lobby page styles */
-.lobby-main{
+.lobby-main {
+    height: 100%;
+    width: 100%;
+}
+
+.lobby-main .top {
+    height: 10%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.lobby-main .top .left {
+    height: 100%;
+    width: 100%;
     display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.lobby-main .top .right {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.lobby-main .middle {
+    height: 80%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.lobby-main .middle .left {
+    height: 100%;
+    width: 100%;
+    max-width: 300px;
+}
+
+.lobby-main .middle .left h2 {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lobby-main .middle .left ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.lobby-main .middle .left li {
+    background-color: rgb(255, 255, 255);
+    margin: 0.2rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    height: 10%;
+    width: 100%;
+}
+
+.lobby-main .middle .right {
+    height: 100%;
+    width: 100%;
+}
+
+.lobby-main .bottom {
+    height: 10%;
+    width: 100%;
 }

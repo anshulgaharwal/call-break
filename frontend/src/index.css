@@ -5,3 +5,37 @@
     box-sizing: border-box;
     font-family: 'Outfit', sans-serif;
 }
+
+:root {
+  /* Base */
+  --bg-main: #FFD7A8;        /* Warm parchment */
+  --bg-panel: #F6C28B;       /* Soft sand */
+  --surface: #FFF1DD;        /* Card / modal surface */
+
+  /* Primary */
+  --primary: #7E2A0C;        /* Deep mahogany */
+  --primary-hover: #9A3A14;  /* Roasted brown */
+  --primary-active: #B63A1E; /* Brick red */
+
+  /* Accents */
+  --accent: #E59A3A;         /* Amber gold */
+  --accent-soft: #F2B56B;    /* Honey glow */
+
+  /* Text */
+  --text-main: #3B1406;      /* Dark cocoa */
+  --text-inverse: #FFF4E6;   /* Warm ivory */
+  --text-muted: #6B3A22;     /* Soft brown */
+
+  /* UI */
+  --border: #D6A06A;         /* Warm tan */
+  --shadow: rgba(126, 42, 12, 0.25);
+
+  /* States */
+  --success: #4F7B3A;        /* Leaf green */
+  --danger: #B63A1E;         /* Brick red */
+  --warning: #E59A3A;        /* Amber */
+}
+
+body {
+    background-color: var(--bg-main);
+}
