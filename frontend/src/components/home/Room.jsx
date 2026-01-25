@@ -1,6 +1,6 @@
 //Room.jsx
 import React, { useState } from "react";
-import Input from "../room/input";
+import Input from "../room/Input";
 import { Divide } from "lucide-react";
 import Button from "../common/Button";
 import "../../styles/components/home/room.css";
@@ -24,9 +24,9 @@ const Room = ({ type, setActiveTab, setCurrRoomId }) => {
       setCurrRoomId(data.roomId);
 
       if (data.requiredPassword) {
-        setActiveTab(3); 
+        setActiveTab(3);
       } else {
-        setActiveTab(4); 
+        setActiveTab(4);
       }
     }
   };

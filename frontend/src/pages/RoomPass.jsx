@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Input from "../components/room/input";
+import Input from "../components/room/Input";
 import "../styles/pages/RoomPass.css";
 import Button from "../components/common/Button";
 import { verifyRoomPassword } from "../services/api";
