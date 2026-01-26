@@ -58,7 +58,12 @@ export const acceptInvitation = async (req, res) => {
         await room.save();
 
         await invitation.save();
-        res.status(200).json(invitation);
+        res.status(200).json({
+            success: true,
+            message: 'Invitation accepted',
+            invitation,
+            room
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -79,7 +84,11 @@ export const rejectInvitation = async (req, res) => {
         }
         invitation.status = 'rejected';
         await invitation.save();
-        res.status(200).json(invitation);
+        res.status(200).json({
+            success: true,
+            message: 'Invitation rejected',
+            invitation
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });

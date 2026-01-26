@@ -108,8 +108,13 @@ const Lobby = ({ setActiveTab, roomId }) => {
           <ul>
             {players.map((player, index) => (
               <li key={index}>
-                {player}
-                {player === admin && " (Admin)"}
+                <div>
+                  {player}
+                  {player === admin && " (Admin)"}
+                </div>
+                <div>
+                  {player !== admin && <Button onClick={() => handleDeletePlayer(player)}>Delete</Button>}
+                </div>
               </li>
             ))}
           </ul>

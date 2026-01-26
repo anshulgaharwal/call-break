@@ -14,8 +14,6 @@ const Invitations = () => {
   const fetchInvitations = async () => {
     try {
       const data = await getInvitations();
-      console.log(data);
-
       setInvitations(data);
     } catch (err) {
       console.error(err.message);
@@ -25,7 +23,9 @@ const Invitations = () => {
   const handleAccept = async (invitationId) => {
     try {
       const data = await acceptInvitation(invitationId);
-      console.log(data);
+      if (data.status === "success") {
+        fetchInvitations();
+      }
     } catch (err) {
       console.error(err.message);
     }
@@ -34,7 +34,9 @@ const Invitations = () => {
   const handleDecline = async (invitationId) => {
     try {
       const data = await rejectInvitation(invitationId);
-      console.log(data);
+      if (data.status === "success") {
+        fetchInvitations();
+      }
     } catch (err) {
       console.error(err.message);
     }
