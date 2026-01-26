@@ -12,6 +12,8 @@ const Lobby = ({ setActiveTab, roomId }) => {
   const [invitations, setInvitations] = useState([]);
   const [admin, setAdmin] = useState("");
 
+  const [receiverUsername, setReceiverUsername] = useState("");
+
   const handlePrev = async () => {
     try {
       if (user.username === admin) {
@@ -27,7 +29,7 @@ const Lobby = ({ setActiveTab, roomId }) => {
 
   const handleSendInvitation = async () => {
     try {
-      const data = await createInvitation(user.username, roomId);
+      const data = await createInvitation(receiverUsername, roomId);
       const index = invitations.findIndex((invitation) => invitation._id === data._id);
       if (index === -1) {
         setInvitations([...invitations, data]);
@@ -116,7 +118,7 @@ const Lobby = ({ setActiveTab, roomId }) => {
         <div className="right">
 
           <div className="send-invitation">
-            <Input placeholder="Enter username" />
+            <Input placeholder="Enter username" onChange={(e) => setReceiverUsername(e.target.value)} />
             <Button onClick={handleSendInvitation}>Send Invitation</Button>
           </div>
           <div className="sent-invitations">

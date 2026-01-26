@@ -47,6 +47,16 @@ export const acceptInvitation = async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         invitation.status = 'accepted';
+        const room = await Room.findOne({ id: invitation.roomId });
+        if (!room) {
+            return res.status(404).json({ error: 'Room not found' });
+        }
+        if (room.users.length >= 4) {
+            return res.status(401).json({ error: 'Room is full' });
+        }
+        room.users.push(username);
+        await room.save();
+
         await invitation.save();
         res.status(200).json(invitation);
     } catch (error) {
@@ -79,7 +89,7 @@ export const rejectInvitation = async (req, res) => {
 export const getInvitations = async (req, res) => {
     const username = req.user.username;
     try {
-        const invitations = await Invitation.find({ receiver: username });
+        const invitations = await Invitation.find({ receiver: username, status: 'pending' });
         res.status(200).json(invitations);
     } catch (error) {
         console.error(error);
