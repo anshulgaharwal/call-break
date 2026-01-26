@@ -28,7 +28,7 @@ const Home = () => {
           )}
         </div>
         <div className="show-page">
-          {activeTab === 0 && <Invitations key={"0"} />}
+          {activeTab === 0 && <Invitations key={"0"} setCurrRoomId={setCurrRoomId} setActiveTab={setActiveTab} />}
           {activeTab === 1 && (
             <Room
               key={"1"}

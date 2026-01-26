@@ -5,7 +5,7 @@ import declineImg from "../../assets/decline.png";
 import { useAuth } from "../../context/AuthContext";
 import { getInvitations, acceptInvitation, rejectInvitation } from "../../services/api";
 
-const Invitations = () => {
+const Invitations = ({ setCurrRoomId, setActiveTab }) => {
 
   const { user } = useAuth();
 
@@ -23,8 +23,10 @@ const Invitations = () => {
   const handleAccept = async (invitationId) => {
     try {
       const data = await acceptInvitation(invitationId);
-      if (data.status === "success") {
-        fetchInvitations();
+      if (data.success) {
+        localStorage.setItem("roomId", data.invitation.roomId);
+        setCurrRoomId(data.invitation.roomId);
+        setActiveTab(4);
       }
     } catch (err) {
       console.error(err.message);
@@ -34,7 +36,7 @@ const Invitations = () => {
   const handleDecline = async (invitationId) => {
     try {
       const data = await rejectInvitation(invitationId);
-      if (data.status === "success") {
+      if (data.success) {
         fetchInvitations();
       }
     } catch (err) {

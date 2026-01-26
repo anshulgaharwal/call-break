@@ -142,25 +142,25 @@ const Lobby = ({ setActiveTab, roomId }) => {
         </div>
         <div className="right">
 
-          <div className="send-invitation">
+          {user.username === admin && <><div className="send-invitation">
             <Input placeholder="Enter username" onChange={(e) => setReceiverUsername(e.target.value)} />
             <Button onClick={handleSendInvitation}>Send Invitation</Button>
           </div>
-          <div className="sent-invitations">
-            <h2>Sent Invitations</h2>
-            <ul>
-              {invitations.map((invitation, index) => (
-                <li key={index}>
-                  <div>
-                    {invitation.receiver} {`(${invitation.status})`}
-                  </div>
-                  <div>
-                    {invitation.status === 'pending' && <Button onClick={() => handleDeleteInvitation(invitation._id)}>Delete</Button>}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div className="sent-invitations">
+              <h2>Sent Invitations</h2>
+              <ul>
+                {invitations.map((invitation, index) => (
+                  <li key={index}>
+                    <div>
+                      {invitation.receiver} {`(${invitation.status})`}
+                    </div>
+                    <div>
+                      {invitation.status === 'pending' && <Button onClick={() => handleDeleteInvitation(invitation._id)}>Delete</Button>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div></>}
 
           <h2>Game is about to start</h2>
           {players.length < 4 && <p>Waiting for players...</p>}
