@@ -68,6 +68,15 @@ export const join = async (req, res) => {
       });
     }
 
+    if (room.users.length >= 4) {
+      return res.status(401).json({
+        message: "Room is full",
+      });
+    }
+
+    room.users.push(req.user.username);
+    await room.save();
+
     return res.status(200).json({
       requiredPassword: false,
       roomId: room.id,
