@@ -18,7 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', userRoutes);
 app.use('/room', roomRoutes);
-app.use('/invitation', invitationRoutes);
+app.use('/api/invitation', invitationRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Call Break API Server' });

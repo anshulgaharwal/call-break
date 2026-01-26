@@ -3,28 +3,28 @@ import User from "../models/User.js";
 import Room from "../models/Room.js";
 
 export const createInvitation = async (req, res) => {
-    const userId = req.user.id;
-    const { receiverId, roomId } = req.body;
+    const username = req.user.username;
+    const { receiverUsername, roomId } = req.body;
     try {
 
-        const receiver = await User.findById(receiverId);
+        const receiver = await User.findOne({ username: receiverUsername });
         if (!receiver) {
             return res.status(404).json({ error: 'Receiver not found' });
         }
-        const room = await Room.findById(roomId);
+        const room = await Room.findOne({ id: roomId });
         if (!room) {
             return res.status(404).json({ error: 'Room not found' });
         }
-        if (room.hostId !== userId) {
+        if (room.admin !== username) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        const existingInvitation = await Invitation.findOne({ receiverId, roomId });
+        const existingInvitation = await Invitation.findOne({ receiverUsername, roomId });
         if (existingInvitation) {
             return res.status(400).json({ error: 'Invitation already sent' });
         }
         const invitation = new Invitation({
-            senderId: userId,
-            receiverId,
+            sender: username,
+            receiver: receiverUsername,
             roomId,
         });
         await invitation.save();
@@ -36,14 +36,14 @@ export const createInvitation = async (req, res) => {
 };
 
 export const acceptInvitation = async (req, res) => {
-    const userId = req.user.id;
+    const username = req.user.username;
     const { invitationId } = req.body;
     try {
         const invitation = await Invitation.findById(invitationId);
         if (!invitation) {
             return res.status(404).json({ error: 'Invitation not found' });
         }
-        if (invitation.receiverId !== userId) {
+        if (invitation.receiver !== username) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         invitation.status = 'accepted';
@@ -57,14 +57,14 @@ export const acceptInvitation = async (req, res) => {
 
 
 export const rejectInvitation = async (req, res) => {
-    const userId = req.user.id;
+    const username = req.user.username;
     const { invitationId } = req.body;
     try {
         const invitation = await Invitation.findById(invitationId);
         if (!invitation) {
             return res.status(404).json({ error: 'Invitation not found' });
         }
-        if (invitation.receiverId !== userId) {
+        if (invitation.receiver !== username) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         invitation.status = 'rejected';
@@ -77,9 +77,9 @@ export const rejectInvitation = async (req, res) => {
 };
 
 export const getInvitations = async (req, res) => {
-    const userId = req.user.id;
+    const username = req.user.username;
     try {
-        const invitations = await Invitation.find({ receiverId: userId });
+        const invitations = await Invitation.find({ receiver: username });
         res.status(200).json(invitations);
     } catch (error) {
         console.error(error);
@@ -88,9 +88,9 @@ export const getInvitations = async (req, res) => {
 };
 
 export const getInvitationsSent = async (req, res) => {
-    const userId = req.user.id;
+    const username = req.user.username;
     try {
-        const invitations = await Invitation.find({ senderId: userId });
+        const invitations = await Invitation.find({ sender: username });
         res.status(200).json(invitations);
     } catch (error) {
         console.error(error);
@@ -100,14 +100,14 @@ export const getInvitationsSent = async (req, res) => {
 
 
 export const deleteInvitation = async (req, res) => {
-    const userId = req.user.id;
+    const username = req.user.username;
     const { invitationId } = req.body;
     try {
         const invitation = await Invitation.findById(invitationId);
         if (!invitation) {
             return res.status(404).json({ error: 'Invitation not found' });
         }
-        if (invitation.senderId !== userId) {
+        if (invitation.sender !== username) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         await invitation.deleteOne();

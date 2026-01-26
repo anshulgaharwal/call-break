@@ -124,7 +124,14 @@ export const getUser = async () => {
 
 //room details
 export const getRoomDetails = async (roomId) => {
-  const res = await fetch(`${ROOM_URL}/${roomId}`);
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${ROOM_URL}/${roomId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   const data = await res.json();
 
@@ -157,7 +164,7 @@ export const verifyRoomPassword = async (roomId, password) => {
 };
 
 
-export const createInvitation = async (receiverId, roomId) => {
+export const createInvitation = async (receiverUsername, roomId) => {
   const token = localStorage.getItem("token");
 
   const res = await fetch(`${API_URL}/invitation/create`, {
@@ -166,7 +173,7 @@ export const createInvitation = async (receiverId, roomId) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ receiverId, roomId }),
+    body: JSON.stringify({ receiverUsername, roomId }),
   });
 
   const data = await res.json();
