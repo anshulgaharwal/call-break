@@ -21,10 +21,16 @@
   align-items: center;
 }
 
-.card-left p {
+.card-red {
   font-weight: 600;
   font-size: 80px;
   color: red;
+}
+
+.card-black {
+  font-weight: 600;
+  font-size: 80px;
+  color: rgb(0, 0, 0);
 }
 
 .card-left img {
@@ -42,12 +48,6 @@
 
 .card-right > div {
   transform: rotate(180deg);
-}
-
-.card-right p {
-  font-weight: 600;
-  font-size: 80px;
-  color: red;
 }
 
 .card-right img {
