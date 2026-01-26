@@ -172,3 +172,43 @@ export const verifyPassword = async (req, res) => {
     res.status(500).json({ message: "Failed to verify password" });
   }
 };
+
+export const removePlayer = async (req, res) => {
+  const username = req.user.username;
+    try {
+        const { roomId, usernameToRemove } = req.body;
+        const room = await Room.findOne({ id: roomId });
+
+        if (!room) {
+            return res.status(404).json({
+                message: "Room not found",
+            });
+        }
+
+        if (room.admin !== username) {
+            return res.status(401).json({
+                message: "Unauthorized",
+            });
+        }
+
+        if (room.users.includes(usernameToRemove)) {
+            room.users = room.users.filter((user) => user !== usernameToRemove);
+            await room.save();
+
+            return res.status(200).json({
+              success: true,
+                message: "User removed from room",
+            });
+        }
+
+        return res.status(200).json({
+          success: false,
+            message: "User not found in room",
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            message: "Failed to remove user from room",
+        });
+    }
+};

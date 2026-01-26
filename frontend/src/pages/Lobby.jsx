@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import Input from "../components/room/Input";
-import { deleteRoom, getRoomDetails, createInvitation, getInvitationsSent, deleteInvitation } from "../services/api";
+import { deleteRoom, getRoomDetails, createInvitation, getInvitationsSent, deleteInvitation, removePlayer } from "../services/api";
 import { useAuth } from "../context/AuthContext.jsx"
 import "../styles/pages/Lobby.css";
 
@@ -30,9 +30,11 @@ const Lobby = ({ setActiveTab, roomId }) => {
   const handleSendInvitation = async () => {
     try {
       const data = await createInvitation(receiverUsername, roomId);
-      const index = invitations.findIndex((invitation) => invitation._id === data._id);
-      if (index === -1) {
-        setInvitations([...invitations, data]);
+      if (data.success) {
+        const index = invitations.findIndex((invitation) => invitation._id === data.invitation._id);
+        if (index === -1) {
+          setInvitations([...invitations, data.invitation]);
+        }
       }
     } catch (err) {
       console.error(err.message);
@@ -42,11 +44,29 @@ const Lobby = ({ setActiveTab, roomId }) => {
   const handleDeleteInvitation = async (invitationId) => {
     try {
       const data = await deleteInvitation(invitationId);
-      const index = invitations.findIndex((invitation) => invitation._id === invitationId);
-      if (index !== -1) {
-        const newInvitations = [...invitations];
-        newInvitations.splice(index, 1);
-        setInvitations(newInvitations);
+      if (data.success) {
+        const index = invitations.findIndex((invitation) => invitation._id === invitationId);
+        if (index !== -1) {
+          const newInvitations = [...invitations];
+          newInvitations.splice(index, 1);
+          setInvitations(newInvitations);
+        }
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const handleDeletePlayer = async (usernameToRemove) => {
+    try {
+      const data = await removePlayer(roomId, usernameToRemove);
+      if (data.success) {
+        const index = players.findIndex((player) => player === usernameToRemove);
+        if (index !== -1) {
+          const newPlayers = [...players];
+          newPlayers.splice(index, 1);
+          setPlayers(newPlayers);
+        }
       }
     } catch (err) {
       console.error(err.message);

@@ -7,6 +7,13 @@ export const createInvitation = async (req, res) => {
     const { receiverUsername, roomId } = req.body;
     try {
 
+        if (username === receiverUsername) {
+            return res.status(400).json({
+                success: false,
+                error: 'Cannot send invitation to yourself'
+            });
+        }
+
         const receiver = await User.findOne({ username: receiverUsername });
         if (!receiver) {
             return res.status(404).json({ error: 'Receiver not found' });
@@ -28,10 +35,17 @@ export const createInvitation = async (req, res) => {
             roomId,
         });
         await invitation.save();
-        res.status(201).json(invitation);
+        res.status(201).json({
+            success: true,
+            message: 'Invitation sent',
+            invitation
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     }
 };
 
@@ -41,18 +55,30 @@ export const acceptInvitation = async (req, res) => {
     try {
         const invitation = await Invitation.findById(invitationId);
         if (!invitation) {
-            return res.status(404).json({ error: 'Invitation not found' });
+            return res.status(404).json({
+                success: false,
+                error: 'Invitation not found'
+            });
         }
         if (invitation.receiver !== username) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            return res.status(401).json({
+                success: false,
+                error: 'Unauthorized'
+            });
         }
         invitation.status = 'accepted';
         const room = await Room.findOne({ id: invitation.roomId });
         if (!room) {
-            return res.status(404).json({ error: 'Room not found' });
+            return res.status(404).json({
+                success: false,
+                error: 'Room not found'
+            });
         }
         if (room.users.length >= 4) {
-            return res.status(401).json({ error: 'Room is full' });
+            return res.status(401).json({
+                success: false,
+                error: 'Room is full'
+            });
         }
         room.users.push(username);
         await room.save();
@@ -66,7 +92,10 @@ export const acceptInvitation = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     }
 };
 
@@ -124,13 +153,22 @@ export const deleteInvitation = async (req, res) => {
     try {
         const invitation = await Invitation.findById(invitationId);
         if (!invitation) {
-            return res.status(404).json({ error: 'Invitation not found' });
+            return res.status(404).json({
+                success: false,
+                error: 'Invitation not found'
+            });
         }
         if (invitation.sender !== username) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            return res.status(401).json({
+                success: false,
+                error: 'Unauthorized'
+            });
         }
         await invitation.deleteOne();
-        res.status(200).json({ message: 'Invitation deleted' });
+        res.status(200).json({
+            success: true,
+            message: 'Invitation deleted'
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
