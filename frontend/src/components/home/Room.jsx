@@ -5,6 +5,7 @@ import { Divide } from "lucide-react";
 import Button from "../common/Button";
 import "../../styles/components/home/room.css";
 import { create, join } from "../../services/api";
+import Card from "../game/Card";
 
 const Room = ({ type, setActiveTab, setCurrRoomId }) => {
   const [formData, setFormData] = useState({
@@ -30,6 +31,11 @@ const Room = ({ type, setActiveTab, setCurrRoomId }) => {
       }
     }
   };
+
+  // return(
+  //   <Card />
+  // )
+
   return (
     <div className="room-container">
       <div className="header-room">

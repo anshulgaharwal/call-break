@@ -1,0 +1,67 @@
+.card-parent {
+  padding: 8px;
+  height: 700px;
+  width: 500px;
+  border-radius: 25px;
+  background-color: rgb(11, 51, 251);
+}
+
+.card-base {
+  background-color: aliceblue;
+  display: flex;
+  height: 100%;
+  border-radius: 25px;
+}
+
+.card-left {
+  height: 100%;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-left p {
+  font-weight: 600;
+  font-size: 80px;
+  color: red;
+}
+
+.card-left img {
+  width: 45px;
+}
+
+.card-right {
+  height: 100%;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.card-right > div {
+  transform: rotate(180deg);
+}
+
+.card-right p {
+  font-weight: 600;
+  font-size: 80px;
+  color: red;
+}
+
+.card-right img {
+  width: 45px;
+}
+
+.card-middle {
+  height: 100%;
+  display: flex;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-middle img {
+  width: 120px;
+}
