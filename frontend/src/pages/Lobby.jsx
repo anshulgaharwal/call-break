@@ -126,8 +126,12 @@ const Lobby = ({ setActiveTab, roomId }) => {
             <ul>
               {invitations.map((invitation, index) => (
                 <li key={index}>
-                  {invitation.receiver} {`(${invitation.status})`}
-                  <Button onClick={() => handleDeleteInvitation(invitation._id)}>Delete</Button>
+                  <div>
+                    {invitation.receiver} {`(${invitation.status})`}
+                  </div>
+                  <div>
+                    {invitation.status === 'pending' && <Button onClick={() => handleDeleteInvitation(invitation._id)}>Delete</Button>}
+                  </div>
                 </li>
               ))}
             </ul>
