@@ -28,7 +28,10 @@ const Lobby = ({ setActiveTab, roomId }) => {
   const handleSendInvitation = async () => {
     try {
       const data = await createInvitation(user.username, roomId);
-      console.log(data.message);
+      const index = invitations.findIndex((invitation) => invitation._id === data._id);
+      if (index === -1) {
+        setInvitations([...invitations, data]);
+      }
     } catch (err) {
       console.error(err.message);
     }
@@ -37,36 +40,55 @@ const Lobby = ({ setActiveTab, roomId }) => {
   const handleDeleteInvitation = async (invitationId) => {
     try {
       const data = await deleteInvitation(invitationId);
-      console.log(data.message);
+      const index = invitations.findIndex((invitation) => invitation._id === invitationId);
+      if (index !== -1) {
+        const newInvitations = [...invitations];
+        newInvitations.splice(index, 1);
+        setInvitations(newInvitations);
+      }
     } catch (err) {
       console.error(err.message);
     }
   };
 
+  const fetchRoom = async () => {
+    try {
+      const data = await getRoomDetails(roomId);
+      setPlayers(data.users);
+      setAdmin(data.admin);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+
+  const fetchInvitations = async () => {
+    try {
+      const data = await getInvitationsSent();
+      setInvitations(data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  // refresh every 5 seconds and first time instantly
   useEffect(() => {
-    if (!roomId) return;
-
-    const fetchRoom = async () => {
-      try {
-        const data = await getRoomDetails(roomId);
-        setPlayers(data.users);
-        setAdmin(data.admin);
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
     fetchRoom();
-
-    const fetchInvitations = async () => {
-      try {
-        const data = await getInvitationsSent();
-        setInvitations(data);
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
     fetchInvitations();
-  }, [roomId]);
+    const interval = setInterval(() => {
+      fetchRoom();
+      fetchInvitations();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+
+  // useEffect(() => {
+  //   if (!roomId) return;
+
+  //   fetchRoom();
+  //   fetchInvitations();
+  // }, [roomId]);
 
   return (
     <div className="lobby-main">
@@ -102,8 +124,8 @@ const Lobby = ({ setActiveTab, roomId }) => {
             <ul>
               {invitations.map((invitation, index) => (
                 <li key={index}>
-                  {invitation.username}
-                  <Button onClick={() => handleDeleteInvitation(invitation.id)}>Delete</Button>
+                  {invitation.receiver} {`(${invitation.status})`}
+                  <Button onClick={() => handleDeleteInvitation(invitation._id)}>Delete</Button>
                 </li>
               ))}
             </ul>
