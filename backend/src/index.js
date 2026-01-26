@@ -17,7 +17,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', userRoutes);
-app.use('/room', roomRoutes);
+app.use('/api/room', roomRoutes);
 app.use('/api/invitation', invitationRoutes);
 
 app.get('/', (req, res) => {

@@ -1,5 +1,5 @@
 const API_URL = "http://localhost:5000/api";
-const ROOM_URL = "http://localhost:5000/room";
+const ROOM_URL = `${API_URL}/room`;
 
 // login
 export const login = async (email, password) => {
