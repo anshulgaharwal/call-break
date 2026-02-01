@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Button from "../components/common/Button";
 import Input from "../components/room/Input";
-import { deleteRoom, getRoomDetails, createInvitation, getInvitationsSent, deleteInvitation, removePlayer } from "../services/api";
-import { useAuth } from "../context/AuthContext.jsx"
+import {
+  deleteRoom,
+  getRoomDetails,
+  createInvitation,
+  getInvitationsSent,
+  deleteInvitation,
+  removePlayer,
+  startGame,
+} from "../services/api";
+import { useAuth } from "../context/AuthContext.jsx";
 import "../styles/pages/Lobby.css";
 
 const Lobby = ({ setActiveTab, roomId }) => {
@@ -27,11 +35,21 @@ const Lobby = ({ setActiveTab, roomId }) => {
     }
   };
 
+  const handleStartGame = async () => {
+    try {
+      await startGame(roomId);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   const handleSendInvitation = async () => {
     try {
       const data = await createInvitation(receiverUsername, roomId);
       if (data.success) {
-        const index = invitations.findIndex((invitation) => invitation._id === data.invitation._id);
+        const index = invitations.findIndex(
+          (invitation) => invitation._id === data.invitation._id,
+        );
         if (index === -1) {
           setInvitations([...invitations, data.invitation]);
         }
@@ -45,7 +63,9 @@ const Lobby = ({ setActiveTab, roomId }) => {
     try {
       const data = await deleteInvitation(invitationId);
       if (data.success) {
-        const index = invitations.findIndex((invitation) => invitation._id === invitationId);
+        const index = invitations.findIndex(
+          (invitation) => invitation._id === invitationId,
+        );
         if (index !== -1) {
           const newInvitations = [...invitations];
           newInvitations.splice(index, 1);
@@ -61,7 +81,9 @@ const Lobby = ({ setActiveTab, roomId }) => {
     try {
       const data = await removePlayer(roomId, usernameToRemove);
       if (data.success) {
-        const index = players.findIndex((player) => player === usernameToRemove);
+        const index = players.findIndex(
+          (player) => player === usernameToRemove,
+        );
         if (index !== -1) {
           const newPlayers = [...players];
           newPlayers.splice(index, 1);
@@ -78,11 +100,14 @@ const Lobby = ({ setActiveTab, roomId }) => {
       const data = await getRoomDetails(roomId);
       setPlayers(data.users);
       setAdmin(data.admin);
+      if (data.gameStarted) {
+        localStorage.setItem("players", JSON.stringify(data.users));
+        setActiveTab(5);
+      }
     } catch (err) {
       console.error(err.message);
     }
   };
-
 
   const fetchInvitations = async () => {
     try {
@@ -103,7 +128,6 @@ const Lobby = ({ setActiveTab, roomId }) => {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-
 
   // useEffect(() => {
   //   if (!roomId) return;
@@ -133,43 +157,61 @@ const Lobby = ({ setActiveTab, roomId }) => {
                   {player === admin && " (Admin)"}
                 </div>
                 <div>
-                  {player !== admin && <Button onClick={() => handleDeletePlayer(player)}>Delete</Button>}
+                  {player !== admin && (
+                    <Button onClick={() => handleDeletePlayer(player)}>
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </li>
             ))}
           </ul>
-
         </div>
         <div className="right">
-
-          {user.username === admin && <><div className="send-invitation">
-            <Input placeholder="Enter username" onChange={(e) => setReceiverUsername(e.target.value)} />
-            <Button onClick={handleSendInvitation}>Send Invitation</Button>
-          </div>
-            <div className="sent-invitations">
-              <h2>Sent Invitations</h2>
-              <ul>
-                {invitations.map((invitation, index) => (
-                  <li key={index}>
-                    <div>
-                      {invitation.receiver} {`(${invitation.status})`}
-                    </div>
-                    <div>
-                      {invitation.status === 'pending' && <Button onClick={() => handleDeleteInvitation(invitation._id)}>Delete</Button>}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div></>}
+          {user.username === admin && (
+            <>
+              <div className="send-invitation">
+                <Input
+                  placeholder="Enter username"
+                  onChange={(e) => setReceiverUsername(e.target.value)}
+                />
+                <Button onClick={handleSendInvitation}>Send Invitation</Button>
+              </div>
+              <div className="sent-invitations">
+                <h2>Sent Invitations</h2>
+                <ul>
+                  {invitations.map((invitation, index) => (
+                    <li key={index}>
+                      <div>
+                        {invitation.receiver} {`(${invitation.status})`}
+                      </div>
+                      <div>
+                        {invitation.status === "pending" && (
+                          <Button
+                            onClick={() =>
+                              handleDeleteInvitation(invitation._id)
+                            }
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
 
           <h2>Game is about to start</h2>
           {players.length < 4 && <p>Waiting for players...</p>}
           {players.length === 4 && <p>Room is full</p>}
+          {user.username === admin && players.length === 4 && (
+            <Button onClick={handleStartGame}>Start Game</Button>
+          )}
         </div>
       </div>
-      <div className="bottom">
-
-      </div>
+      <div className="bottom"></div>
     </div>
   );
 };

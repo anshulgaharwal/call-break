@@ -314,3 +314,20 @@ export const deleteInvitation = async (invitationId) => {
 
   return data;
 };
+
+export const startGame = async (roomId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${ROOM_URL}/start`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ roomId }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message);
+  return data;
+};

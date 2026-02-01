@@ -6,6 +6,7 @@ import Navbar from "../components/home/Navbar";
 import "../styles/pages/Home.css";
 import RoomPass from "./RoomPass";
 import Lobby from "./Lobby";
+import Game from "./Game";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -61,6 +62,10 @@ const Home = () => {
               roomId={currRoomId}
             />
           )}
+          {
+            activeTab === 5 && 
+            <Game roomId={currRoomId}/>
+          }
         </div>
       </div>
     </>

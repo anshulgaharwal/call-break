@@ -134,6 +134,7 @@ export const getRoomDetails = async (req, res) => {
       users: room.users,
       maxPlayers: 4,
       currentPlayers: room.users.length,
+      gameStarted: room.gameStarted,
     });
   } catch (err) {
     console.error(err);
@@ -211,4 +212,33 @@ export const removePlayer = async (req, res) => {
             message: "Failed to remove user from room",
         });
     }
+};
+
+
+export const startGame = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+    const username = req.user.username;
+
+    const room = await Room.findOne({ id: roomId });
+
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+
+    if (room.admin !== username) {
+      return res.status(403).json({ message: "Only admin can start the game" });
+    }
+
+    if (room.users.length !== 4) {
+      return res.status(400).json({ message: "Exactly 4 players required" });
+    }
+
+    room.gameStarted = true;
+    await room.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to start game" });
+  }
 };
