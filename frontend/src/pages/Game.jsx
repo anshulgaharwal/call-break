@@ -14,11 +14,10 @@ const Game = ({ roomId, setActiveTab }) => {
   const [hands, setHands] = useState({});
   const [turnIndex, setTurnIndex] = useState(0);
   const [centerPile, setCenterPile] = useState([]);
-  const [isPlaying, setIsPlaying] = useState(false); // 🔒 click lock
+  const [isPlaying, setIsPlaying] = useState(false); 
 
   const myHand = hands[user.username] || [];
 
-  // rotate players so ME is always bottom (UI only)
   const rotatedPlayers = useMemo(() => {
     const myIndex = players.indexOf(user.username);
     if (myIndex === -1) return players;
@@ -66,7 +65,7 @@ const Game = ({ roomId, setActiveTab }) => {
       setHands(data.hands);
       setCenterPile(data.centerPile);
       setTurnIndex(data.turnIndex);
-      setIsPlaying(false); // 🔓 unlock after update
+      setIsPlaying(false); 
     });
 
     return () => {
