@@ -1,8 +1,8 @@
 .card-parent {
-  padding: 8px;
-  height: 700px;
-  width: 500px;
-  border-radius: 25px;
+  padding: 2px;
+  height: 105px;
+  width: 75px;
+  border-radius: 12px;
   background-color: rgb(11, 51, 251);
 }
 
@@ -10,7 +10,7 @@
   background-color: aliceblue;
   display: flex;
   height: 100%;
-  border-radius: 25px;
+  border-radius: 12px;
 }
 
 .card-left {
@@ -23,18 +23,18 @@
 
 .card-red {
   font-weight: 600;
-  font-size: 80px;
+  font-size: 10px;
   color: red;
 }
 
 .card-black {
   font-weight: 600;
-  font-size: 80px;
+  font-size: 10px;
   color: rgb(0, 0, 0);
 }
 
 .card-left img {
-  width: 45px;
+  width: 7px;
 }
 
 .card-right {
@@ -51,7 +51,7 @@
 }
 
 .card-right img {
-  width: 45px;
+  width: 7px;
 }
 
 .card-middle {
@@ -63,5 +63,5 @@
 }
 
 .card-middle img {
-  width: 120px;
+  width: 12px;
 }

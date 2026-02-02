@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import "../styles/pages/Game.css";
 import { getRoomDetails, deleteRoom } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import Card from "../components/game/Card";
 
 const Game = ({ roomId, setActiveTab }) => {
   const { user } = useAuth();
   const [players, setPlayers] = useState([]);
   const [admin, setAdmin] = useState("");
 
-  // fetch room on load + refresh
+  // dummy 13 cards
+  const dummyHand = Array.from({ length: 13 }, (_, i) => i);
+
   useEffect(() => {
     if (!roomId) return;
 
@@ -19,7 +22,6 @@ const Game = ({ roomId, setActiveTab }) => {
         setAdmin(data.admin);
         localStorage.setItem("players", JSON.stringify(data.users));
       } catch (err) {
-        // room deleted by admin
         alert("Game ended");
         localStorage.removeItem("roomId");
         localStorage.removeItem("players");
@@ -53,10 +55,45 @@ const Game = ({ roomId, setActiveTab }) => {
         </button>
       )}
 
-      <div className="top">{players[1]}</div>
-      <div className="left">{players[0]}</div>
-      <div className="right">{players[2]}</div>
-      <div className="bottom">{players[3]}</div>
+      {/* TOP */}
+      <div className="player top">
+        <div className="name">{players[1]}</div>
+        <div className="cards horizontal">
+          {dummyHand.map((c, i) => (
+            <Card key={i} num={c} />
+          ))}
+        </div>
+      </div>
+
+      {/* LEFT */}
+      <div className="player left">
+        <div className="name">{players[0]}</div>
+        <div className="cards vertical">
+          {dummyHand.map((c, i) => (
+            <Card key={i} num={c} />
+          ))}
+        </div>
+      </div>
+
+      {/* RIGHT */}
+      <div className="player right">
+        <div className="name">{players[2]}</div>
+        <div className="cards vertical">
+          {dummyHand.map((c, i) => (
+            <Card key={i} num={c} />
+          ))}
+        </div>
+      </div>
+
+      {/* BOTTOM */}
+      <div className="player bottom">
+        <div className="cards horizontal">
+          {dummyHand.map((c, i) => (
+            <Card key={i} num={c} />
+          ))}
+        </div>
+        <div className="name">{players[3]}</div>
+      </div>
     </div>
   );
 };
