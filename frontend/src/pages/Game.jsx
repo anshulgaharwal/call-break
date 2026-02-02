@@ -4,6 +4,7 @@ import { getRoomDetails, deleteRoom, distributeCards } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import Card from "../components/game/Card";
 import socket from "../socket";
+import CardBack from "../components/game/CardBack";
 
 const Game = ({ roomId, setActiveTab }) => {
   const { user } = useAuth();
@@ -104,7 +105,7 @@ const Game = ({ roomId, setActiveTab }) => {
         <div className="name">{rotatedPlayers[1]}</div>
         <div className="cards horizontal">
           {(hands[rotatedPlayers[1]] || []).map((c, i) => (
-            <Card key={i} num={c} />
+            <CardBack key={i}/>
           ))}
         </div>
       </div>
@@ -114,7 +115,7 @@ const Game = ({ roomId, setActiveTab }) => {
         <div className="name">{rotatedPlayers[0]}</div>
         <div className="cards vertical">
           {(hands[rotatedPlayers[0]] || []).map((c, i) => (
-            <Card key={i} num={c} />
+            <CardBack key={i}/>
           ))}
         </div>
       </div>
@@ -124,7 +125,7 @@ const Game = ({ roomId, setActiveTab }) => {
         <div className="name">{rotatedPlayers[2]}</div>
         <div className="cards vertical">
           {(hands[rotatedPlayers[2]] || []).map((c, i) => (
-            <Card key={i} num={c} />
+            <CardBack key={i} />
           ))}
         </div>
       </div>

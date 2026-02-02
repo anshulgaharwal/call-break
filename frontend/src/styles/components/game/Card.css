@@ -13,6 +13,12 @@
   border-radius: 12px;
 }
 
+.card-back .card-base {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  border-radius: 12px;
+}
+
+
 .card-left {
   height: 100%;
   width: 25%;
