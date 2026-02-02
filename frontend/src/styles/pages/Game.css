@@ -96,3 +96,9 @@
   display: flex;
   gap: 12px;
 }
+
+.active-turn {
+  color: #ffeb3b;
+  font-weight: bold;
+  border-bottom: 2px solid #ffeb3b;
+}

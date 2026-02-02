@@ -7,15 +7,23 @@ const roomSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
   users: [{ type: String }],
   admin: { type: String, required: true },
+
   gameStarted: {
     type: Boolean,
     default: false,
   },
+
   hands: {
     type: Map,
     of: [Number],
     default: {},
   },
+
+  turnIndex: {
+    type: Number,
+    default: 0, 
+  },
+
   centerPile: {
     type: [
       {

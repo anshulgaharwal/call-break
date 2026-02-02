@@ -52,29 +52,40 @@ io.on("connection", (socket) => {
   });
 
   socket.on("play-card", async ({ roomId, username, card }) => {
-    try {
-      const room = await Room.findOne({ id: roomId });
-      if (!room) return;
+  try {
+    const room = await Room.findOne({ id: roomId });
+    if (!room) return;
 
-      const hand = room.hands.get(username) || [];
+    const players = room.users;
+    const currentPlayer = players[room.turnIndex];
 
-      room.hands.set(
-        username,
-        hand.filter((c) => c !== card),
-      );
-
-      room.centerPile.push({ username, card });
-
-      await room.save();
-
-      io.to(roomId).emit("card-played", {
-        hands: Object.fromEntries(room.hands),
-        centerPile: room.centerPile,
-      });
-    } catch (err) {
-      console.error("play-card error:", err);
+    if (currentPlayer !== username) {
+      return;
     }
-  });
+
+    const hand = room.hands.get(username) || [];
+
+    room.hands.set(
+      username,
+      hand.filter((c) => c !== card)
+    );
+
+    room.centerPile.push({ username, card });
+
+    room.turnIndex = (room.turnIndex + 1) % players.length;
+
+    await room.save();
+
+    io.to(roomId).emit("card-played", {
+      hands: Object.fromEntries(room.hands),
+      centerPile: room.centerPile,
+      turnIndex: room.turnIndex,
+    });
+  } catch (err) {
+    console.error("play-card error:", err);
+  }
+});
+
 
   socket.on("disconnect", () => {
     console.log("Socket disconnected:", socket.id);
