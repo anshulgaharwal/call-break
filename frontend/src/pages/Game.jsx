@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "../styles/pages/Game.css";
 import { getRoomDetails, deleteRoom, distributeCards } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import Card from "../components/game/Card";
-import socket from "../socket";
 import CardBack from "../components/game/CardBack";
+import socket from "../socket";
 
 const Game = ({ roomId, setActiveTab }) => {
   const { user } = useAuth();
@@ -12,18 +12,24 @@ const Game = ({ roomId, setActiveTab }) => {
   const [players, setPlayers] = useState([]);
   const [admin, setAdmin] = useState("");
   const [hands, setHands] = useState({});
+  const [turnIndex, setTurnIndex] = useState(0);
   const [centerPile, setCenterPile] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false); // 🔒 click lock
 
   const myHand = hands[user.username] || [];
 
-  const rotatePlayers = (players, currentUsername) => {
-    const myIndex = players.indexOf(currentUsername);
+  // rotate players so ME is always bottom (UI only)
+  const rotatedPlayers = useMemo(() => {
+    const myIndex = players.indexOf(user.username);
     if (myIndex === -1) return players;
+    return [
+      ...players.slice(myIndex + 1),
+      ...players.slice(0, myIndex + 1),
+    ];
+  }, [players, user.username]);
 
-    return [...players.slice(myIndex + 1), ...players.slice(0, myIndex + 1)];
-  };
-
-  const rotatedPlayers = rotatePlayers(players, user.username);
+  const currentTurnPlayer = players[turnIndex];
+  const isMyTurn = currentTurnPlayer === user.username;
 
   useEffect(() => {
     if (!roomId) return;
@@ -34,11 +40,12 @@ const Game = ({ roomId, setActiveTab }) => {
         setPlayers(data.users);
         setAdmin(data.admin);
         setHands(data.hands || {});
+        setTurnIndex(data.turnIndex ?? 0);
+        setCenterPile(data.centerPile || []);
         localStorage.setItem("players", JSON.stringify(data.users));
-      } catch (err) {
+      } catch {
         alert("Game ended");
-        localStorage.removeItem("roomId");
-        localStorage.removeItem("players");
+        localStorage.clear();
         setActiveTab(0);
       }
     };
@@ -50,24 +57,28 @@ const Game = ({ roomId, setActiveTab }) => {
 
     socket.on("cards-distributed", (data) => {
       setHands(data.hands);
-      setCenterPile(data.centerPile);
+      setCenterPile(data.centerPile || []);
+      setTurnIndex(data.turnIndex ?? 0);
+      setIsPlaying(false);
     });
 
     socket.on("card-played", (data) => {
       setHands(data.hands);
       setCenterPile(data.centerPile);
+      setTurnIndex(data.turnIndex);
+      setIsPlaying(false); // 🔓 unlock after update
     });
 
     return () => {
       socket.off("cards-distributed");
+      socket.off("card-played");
     };
   }, [roomId]);
 
   const handleExitGame = async () => {
     try {
       await deleteRoom(roomId);
-      localStorage.removeItem("roomId");
-      localStorage.removeItem("players");
+      localStorage.clear();
       setActiveTab(0);
     } catch (err) {
       alert(err.message);
@@ -88,6 +99,7 @@ const Game = ({ roomId, setActiveTab }) => {
 
   return (
     <div className="game-table">
+      {/* CENTER PILE */}
       <div className="center-pile">
         {centerPile.map((play, i) => (
           <Card key={i} num={play.card} />
@@ -111,9 +123,15 @@ const Game = ({ roomId, setActiveTab }) => {
 
       {/* TOP */}
       <div className="player top">
-        <div className="name">{rotatedPlayers[1]}</div>
+        <div
+          className={`name ${
+            currentTurnPlayer === rotatedPlayers[1] ? "active-turn" : ""
+          }`}
+        >
+          {rotatedPlayers[1]}
+        </div>
         <div className="cards horizontal">
-          {(hands[rotatedPlayers[1]] || []).map((c, i) => (
+          {(hands[rotatedPlayers[1]] || []).map((_, i) => (
             <CardBack key={i} />
           ))}
         </div>
@@ -121,9 +139,15 @@ const Game = ({ roomId, setActiveTab }) => {
 
       {/* LEFT */}
       <div className="player left">
-        <div className="name">{rotatedPlayers[0]}</div>
+        <div
+          className={`name ${
+            currentTurnPlayer === rotatedPlayers[0] ? "active-turn" : ""
+          }`}
+        >
+          {rotatedPlayers[0]}
+        </div>
         <div className="cards vertical">
-          {(hands[rotatedPlayers[0]] || []).map((c, i) => (
+          {(hands[rotatedPlayers[0]] || []).map((_, i) => (
             <CardBack key={i} />
           ))}
         </div>
@@ -131,9 +155,15 @@ const Game = ({ roomId, setActiveTab }) => {
 
       {/* RIGHT */}
       <div className="player right">
-        <div className="name">{rotatedPlayers[2]}</div>
+        <div
+          className={`name ${
+            currentTurnPlayer === rotatedPlayers[2] ? "active-turn" : ""
+          }`}
+        >
+          {rotatedPlayers[2]}
+        </div>
         <div className="cards vertical">
-          {(hands[rotatedPlayers[2]] || []).map((c, i) => (
+          {(hands[rotatedPlayers[2]] || []).map((_, i) => (
             <CardBack key={i} />
           ))}
         </div>
@@ -145,19 +175,27 @@ const Game = ({ roomId, setActiveTab }) => {
           {myHand.map((c, i) => (
             <div
               key={i}
-              onClick={() =>
+              onClick={() => {
+                if (!isMyTurn || isPlaying) return;
+                setIsPlaying(true);
                 socket.emit("play-card", {
                   roomId,
                   username: user.username,
                   card: c,
-                })
-              }
+                });
+              }}
+              style={{
+                cursor: isMyTurn ? "pointer" : "not-allowed",
+                opacity: isMyTurn ? 1 : 0.5,
+              }}
             >
               <Card num={c} />
             </div>
           ))}
         </div>
-        <div className="name">{rotatedPlayers[3]}</div>
+        <div className={`name ${isMyTurn ? "active-turn" : ""}`}>
+          {rotatedPlayers[3]}
+        </div>
       </div>
     </div>
   );
