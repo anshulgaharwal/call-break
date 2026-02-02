@@ -7,45 +7,57 @@ import socket from "../socket";
 
 const Game = ({ roomId, setActiveTab }) => {
   const { user } = useAuth();
-  const [players, setPlayers] = useState([]);
-  const [admin, setAdmin] = useState("");
 
+  const [players, setPlayers] = useState([]); // ✅ FIX: missing state
+  const [admin, setAdmin] = useState("");
   const [hands, setHands] = useState({});
+
   const myHand = hands[user.username] || [];
 
-useEffect(() => {
-  if (!roomId) return;
+  // 🔁 rotate players so current user is always bottom
+  const rotatePlayers = (players, currentUsername) => {
+    const myIndex = players.indexOf(currentUsername);
+    if (myIndex === -1) return players;
 
-  const fetchRoom = async () => {
-    try {
-      const data = await getRoomDetails(roomId);
-      setPlayers(data.users);
-      setAdmin(data.admin);
-      setHands(data.hands || {});
-      localStorage.setItem("players", JSON.stringify(data.users));
-    } catch (err) {
-      alert("Game ended");
-      localStorage.removeItem("roomId");
-      localStorage.removeItem("players");
-      setActiveTab(0);
-    }
+    return [
+      ...players.slice(myIndex + 1),
+      ...players.slice(0, myIndex + 1),
+    ];
   };
 
-  fetchRoom();
+  const rotatedPlayers = rotatePlayers(players, user.username);
 
-  socket.connect();
-  socket.emit("join-room", roomId);
+  useEffect(() => {
+    if (!roomId) return;
 
-  socket.on("cards-distributed", (data) => {
-    setHands(data.hands);
-  });
+    const fetchRoom = async () => {
+      try {
+        const data = await getRoomDetails(roomId);
+        setPlayers(data.users);
+        setAdmin(data.admin);
+        setHands(data.hands || {});
+        localStorage.setItem("players", JSON.stringify(data.users));
+      } catch (err) {
+        alert("Game ended");
+        localStorage.removeItem("roomId");
+        localStorage.removeItem("players");
+        setActiveTab(0);
+      }
+    };
 
-  return () => {
-    socket.off("cards-distributed");
-  };
+    fetchRoom();
 
-}, [roomId]);
+    socket.connect();
+    socket.emit("join-room", roomId);
 
+    socket.on("cards-distributed", (data) => {
+      setHands(data.hands);
+    });
+
+    return () => {
+      socket.off("cards-distributed");
+    };
+  }, [roomId]);
 
   const handleExitGame = async () => {
     try {
@@ -72,25 +84,26 @@ useEffect(() => {
 
   return (
     <div className="game-table">
+      {/* ADMIN CONTROLS */}
       {user.username === admin && (
-        <button className="exit-game" onClick={handleExitGame}>
-          Exit Game
-        </button>
-      )}
-      {user.username === admin && (
-        <button
-          style={{ position: "absolute", top: "10px", right: "120px" }}
-          onClick={handleDistribute}
-        >
-          Distribute Cards
-        </button>
+        <>
+          <button className="exit-game" onClick={handleExitGame}>
+            Exit Game
+          </button>
+          <button
+            style={{ position: "absolute", top: "10px", right: "120px" }}
+            onClick={handleDistribute}
+          >
+            Distribute Cards
+          </button>
+        </>
       )}
 
       {/* TOP */}
       <div className="player top">
-        <div className="name">{players[1]}</div>
+        <div className="name">{rotatedPlayers[1]}</div>
         <div className="cards horizontal">
-          {(hands[players[1]] || []).map((c, i) => (
+          {(hands[rotatedPlayers[1]] || []).map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>
@@ -98,9 +111,9 @@ useEffect(() => {
 
       {/* LEFT */}
       <div className="player left">
-        <div className="name">{players[0]}</div>
+        <div className="name">{rotatedPlayers[0]}</div>
         <div className="cards vertical">
-          {(hands[players[0]] || []).map((c, i) => (
+          {(hands[rotatedPlayers[0]] || []).map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>
@@ -108,22 +121,22 @@ useEffect(() => {
 
       {/* RIGHT */}
       <div className="player right">
-        <div className="name">{players[2]}</div>
+        <div className="name">{rotatedPlayers[2]}</div>
         <div className="cards vertical">
-          {(hands[players[2]] || []).map((c, i) => (
+          {(hands[rotatedPlayers[2]] || []).map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>
       </div>
 
-      {/* BOTTOM */}
+      {/* BOTTOM (ME) */}
       <div className="player bottom">
         <div className="cards horizontal">
           {myHand.map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>
-        <div className="name">{players[3]}</div>
+        <div className="name">{rotatedPlayers[3]}</div>
       </div>
     </div>
   );
