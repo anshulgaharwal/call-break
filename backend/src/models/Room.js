@@ -13,8 +13,17 @@ const roomSchema = new mongoose.Schema({
   },
   hands: {
     type: Map,
-    of: [Number], 
+    of: [Number],
     default: {},
+  },
+  centerPile: {
+    type: [
+      {
+        username: String,
+        card: Number,
+      },
+    ],
+    default: [],
   },
 });
 

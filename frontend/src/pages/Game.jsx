@@ -9,21 +9,18 @@ import CardBack from "../components/game/CardBack";
 const Game = ({ roomId, setActiveTab }) => {
   const { user } = useAuth();
 
-  const [players, setPlayers] = useState([]); // ✅ FIX: missing state
+  const [players, setPlayers] = useState([]);
   const [admin, setAdmin] = useState("");
   const [hands, setHands] = useState({});
+  const [centerPile, setCenterPile] = useState([]);
 
   const myHand = hands[user.username] || [];
 
-  // 🔁 rotate players so current user is always bottom
   const rotatePlayers = (players, currentUsername) => {
     const myIndex = players.indexOf(currentUsername);
     if (myIndex === -1) return players;
 
-    return [
-      ...players.slice(myIndex + 1),
-      ...players.slice(0, myIndex + 1),
-    ];
+    return [...players.slice(myIndex + 1), ...players.slice(0, myIndex + 1)];
   };
 
   const rotatedPlayers = rotatePlayers(players, user.username);
@@ -53,6 +50,11 @@ const Game = ({ roomId, setActiveTab }) => {
 
     socket.on("cards-distributed", (data) => {
       setHands(data.hands);
+    });
+
+    socket.on("card-played", (data) => {
+      setHands(data.hands);
+      setCenterPile(data.centerPile);
     });
 
     return () => {
@@ -85,6 +87,12 @@ const Game = ({ roomId, setActiveTab }) => {
 
   return (
     <div className="game-table">
+      <div className="center-pile">
+        {centerPile.map((play, i) => (
+          <Card key={i} num={play.card} />
+        ))}
+      </div>
+
       {/* ADMIN CONTROLS */}
       {user.username === admin && (
         <>
@@ -105,7 +113,7 @@ const Game = ({ roomId, setActiveTab }) => {
         <div className="name">{rotatedPlayers[1]}</div>
         <div className="cards horizontal">
           {(hands[rotatedPlayers[1]] || []).map((c, i) => (
-            <CardBack key={i}/>
+            <CardBack key={i} />
           ))}
         </div>
       </div>
@@ -115,7 +123,7 @@ const Game = ({ roomId, setActiveTab }) => {
         <div className="name">{rotatedPlayers[0]}</div>
         <div className="cards vertical">
           {(hands[rotatedPlayers[0]] || []).map((c, i) => (
-            <CardBack key={i}/>
+            <CardBack key={i} />
           ))}
         </div>
       </div>
@@ -134,7 +142,18 @@ const Game = ({ roomId, setActiveTab }) => {
       <div className="player bottom">
         <div className="cards horizontal">
           {myHand.map((c, i) => (
-            <Card key={i} num={c} />
+            <div
+              key={i}
+              onClick={() =>
+                socket.emit("play-card", {
+                  roomId,
+                  username: user.username,
+                  card: c,
+                })
+              }
+            >
+              <Card num={c} />
+            </div>
           ))}
         </div>
         <div className="name">{rotatedPlayers[3]}</div>

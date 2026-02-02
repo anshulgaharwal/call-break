@@ -3,13 +3,12 @@ import cors from "cors";
 import "dotenv/config";
 import { createServer } from "http";
 import { Server } from "socket.io";
-
 import userRoutes from "./routes/userRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import invitationRoutes from "./routes/invitationRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 import { connectDB } from "./config/database.js";
-
+import Room from "./models/Room.js";
 connectDB();
 
 const app = express();
@@ -26,7 +25,6 @@ app.use("/game", gameRoutes);
 app.get("/", (req, res) => {
   res.json({ message: "Call Break API Server" });
 });
-
 
 const httpServer = createServer(app);
 
@@ -45,6 +43,31 @@ io.on("connection", (socket) => {
   socket.on("join-room", (roomId) => {
     socket.join(roomId);
     console.log(`Socket ${socket.id} joined room ${roomId}`);
+  });
+
+  socket.on("play-card", async ({ roomId, username, card }) => {
+    try {
+      const room = await Room.findOne({ id: roomId });
+      if (!room) return;
+
+      const hand = room.hands.get(username) || [];
+
+      room.hands.set(
+        username,
+        hand.filter((c) => c !== card),
+      );
+
+      room.centerPile.push({ username, card });
+
+      await room.save();
+
+      io.to(roomId).emit("card-played", {
+        hands: Object.fromEntries(room.hands),
+        centerPile: room.centerPile,
+      });
+    } catch (err) {
+      console.error("play-card error:", err);
+    }
   });
 
   socket.on("disconnect", () => {
