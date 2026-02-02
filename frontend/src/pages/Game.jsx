@@ -50,6 +50,7 @@ const Game = ({ roomId, setActiveTab }) => {
 
     socket.on("cards-distributed", (data) => {
       setHands(data.hands);
+      setCenterPile(data.centerPile);
     });
 
     socket.on("card-played", (data) => {

@@ -13,9 +13,22 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+  },
+});
 
 app.use(cors());
 app.use(express.json());
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 app.use("/api/auth", userRoutes);
 app.use("/api/room", roomRoutes);
@@ -26,14 +39,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Call Break API Server" });
 });
 
-const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-  },
-});
 
 app.set("io", io);
 

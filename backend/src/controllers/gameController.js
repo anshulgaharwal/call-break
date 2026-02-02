@@ -31,12 +31,14 @@ export const distributeCards = async (req, res) => {
     });
 
     room.hands = hands;
+    room.centerPile = []; 
     room.gameStarted = true;
     await room.save();
 
     const io = req.app.get("io");
     io.to(room.id).emit("cards-distributed", {
       hands,
+      centerPile: [],
     });
 
     res.json({
