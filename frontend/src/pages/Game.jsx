@@ -3,6 +3,7 @@ import "../styles/pages/Game.css";
 import { getRoomDetails, deleteRoom, distributeCards } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import Card from "../components/game/Card";
+import socket from "../socket";
 
 const Game = ({ roomId, setActiveTab }) => {
   const { user } = useAuth();
@@ -12,26 +13,39 @@ const Game = ({ roomId, setActiveTab }) => {
   const [hands, setHands] = useState({});
   const myHand = hands[user.username] || [];
 
-  useEffect(() => {
-    if (!roomId) return;
+useEffect(() => {
+  if (!roomId) return;
 
-    const fetchRoom = async () => {
-      try {
-        const data = await getRoomDetails(roomId);
-        setPlayers(data.users);
-        setAdmin(data.admin);
-        setHands(data.hands || {});
-        localStorage.setItem("players", JSON.stringify(data.users));
-      } catch (err) {
-        alert("Game ended");
-        localStorage.removeItem("roomId");
-        localStorage.removeItem("players");
-        setActiveTab(0);
-      }
-    };
+  const fetchRoom = async () => {
+    try {
+      const data = await getRoomDetails(roomId);
+      setPlayers(data.users);
+      setAdmin(data.admin);
+      setHands(data.hands || {});
+      localStorage.setItem("players", JSON.stringify(data.users));
+    } catch (err) {
+      alert("Game ended");
+      localStorage.removeItem("roomId");
+      localStorage.removeItem("players");
+      setActiveTab(0);
+    }
+  };
 
-    fetchRoom();
-  }, [roomId]);
+  fetchRoom();
+
+  socket.connect();
+  socket.emit("join-room", roomId);
+
+  socket.on("cards-distributed", (data) => {
+    setHands(data.hands);
+  });
+
+  return () => {
+    socket.off("cards-distributed");
+  };
+
+}, [roomId]);
+
 
   const handleExitGame = async () => {
     try {
@@ -46,8 +60,7 @@ const Game = ({ roomId, setActiveTab }) => {
 
   const handleDistribute = async () => {
     try {
-      const data = await distributeCards(roomId);
-      setHands(data.hands);
+      await distributeCards(roomId);
     } catch (err) {
       alert(err.message);
     }

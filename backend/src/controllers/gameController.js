@@ -14,7 +14,9 @@ export const distributeCards = async (req, res) => {
     }
 
     if (room.admin !== username) {
-      return res.status(403).json({ message: "Only admin can distribute cards" });
+      return res
+        .status(403)
+        .json({ message: "Only admin can distribute cards" });
     }
 
     if (room.users.length !== 4) {
@@ -31,6 +33,11 @@ export const distributeCards = async (req, res) => {
     room.hands = hands;
     room.gameStarted = true;
     await room.save();
+
+    const io = req.app.get("io");
+    io.to(room.id).emit("cards-distributed", {
+      hands,
+    });
 
     res.json({
       success: true,
