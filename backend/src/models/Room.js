@@ -11,6 +11,11 @@ const roomSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  hands: {
+    type: Map,
+    of: [Number], 
+    default: {},
+  },
 });
 
 const Room = mongoose.model("Room", roomSchema);

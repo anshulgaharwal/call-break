@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/pages/Game.css";
-import { getRoomDetails, deleteRoom } from "../services/api";
+import { getRoomDetails, deleteRoom, distributeCards } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import Card from "../components/game/Card";
 
@@ -9,8 +9,8 @@ const Game = ({ roomId, setActiveTab }) => {
   const [players, setPlayers] = useState([]);
   const [admin, setAdmin] = useState("");
 
-  // dummy 13 cards
-  const dummyHand = Array.from({ length: 13 }, (_, i) => i);
+  const [hands, setHands] = useState({});
+  const myHand = hands[user.username] || [];
 
   useEffect(() => {
     if (!roomId) return;
@@ -20,6 +20,7 @@ const Game = ({ roomId, setActiveTab }) => {
         const data = await getRoomDetails(roomId);
         setPlayers(data.users);
         setAdmin(data.admin);
+        setHands(data.hands || {});
         localStorage.setItem("players", JSON.stringify(data.users));
       } catch (err) {
         alert("Game ended");
@@ -43,6 +44,15 @@ const Game = ({ roomId, setActiveTab }) => {
     }
   };
 
+  const handleDistribute = async () => {
+    try {
+      const data = await distributeCards(roomId);
+      setHands(data.hands);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   if (players.length !== 4) {
     return <div className="game-loading">Loading game...</div>;
   }
@@ -54,12 +64,20 @@ const Game = ({ roomId, setActiveTab }) => {
           Exit Game
         </button>
       )}
+      {user.username === admin && (
+        <button
+          style={{ position: "absolute", top: "10px", right: "120px" }}
+          onClick={handleDistribute}
+        >
+          Distribute Cards
+        </button>
+      )}
 
       {/* TOP */}
       <div className="player top">
         <div className="name">{players[1]}</div>
         <div className="cards horizontal">
-          {dummyHand.map((c, i) => (
+          {(hands[players[1]] || []).map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>
@@ -69,7 +87,7 @@ const Game = ({ roomId, setActiveTab }) => {
       <div className="player left">
         <div className="name">{players[0]}</div>
         <div className="cards vertical">
-          {dummyHand.map((c, i) => (
+          {(hands[players[0]] || []).map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>
@@ -79,7 +97,7 @@ const Game = ({ roomId, setActiveTab }) => {
       <div className="player right">
         <div className="name">{players[2]}</div>
         <div className="cards vertical">
-          {dummyHand.map((c, i) => (
+          {(hands[players[2]] || []).map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>
@@ -88,7 +106,7 @@ const Game = ({ roomId, setActiveTab }) => {
       {/* BOTTOM */}
       <div className="player bottom">
         <div className="cards horizontal">
-          {dummyHand.map((c, i) => (
+          {myHand.map((c, i) => (
             <Card key={i} num={c} />
           ))}
         </div>

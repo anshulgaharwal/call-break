@@ -331,3 +331,21 @@ export const startGame = async (roomId) => {
   if (!res.ok) throw new Error(data.message);
   return data;
 };
+
+
+export const distributeCards = async (roomId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("http://localhost:5000/game/distribute", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ roomId }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message);
+  return data;
+};
