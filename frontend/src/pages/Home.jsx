@@ -64,7 +64,7 @@ const Home = () => {
           )}
           {
             activeTab === 5 && 
-            <Game roomId={currRoomId}/>
+            <Game roomId={currRoomId} setActiveTab={setActiveTab}/>
           }
         </div>
       </div>
