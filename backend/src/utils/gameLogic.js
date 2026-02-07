@@ -1,13 +1,9 @@
-// 0 - 12 spade A to 2
-// 13 - 25 heart A to 2
-// 26 - 38 club A to 2
-// 39 - 51 diamond A to 2
 
-export const analyzeGame = (hands, centerPile,users, currentUser) => {
+
+export const analyzeGame = (hands, centerPile, currentUser) => {
     const validMoves = [];
     const firstCard = centerPile[0];
     const firstCardSuit = Math.floor(firstCard.card / 13);
-    const firstCardValue = firstCard.card % 13;
 
     const centerHasSpade = centerPile.some(card => Math.floor(card.card / 13) === 0);
 
@@ -55,4 +51,22 @@ export const analyzeGame = (hands, centerPile,users, currentUser) => {
         validMoves.push(...hands[currentUser]);
     }
     
+}
+
+certerPileWinner = (centerPile) => {
+    const centerHasSpade = centerPile.some(card => Math.floor(card.card / 13) === 0);
+    if (centerHasSpade) {
+        return centerPile.reduce((best, card) => {
+            if (Math.floor(card.card / 13) === 0) {
+                return card.card % 13 < best ? card.card % 13 : best;
+            }
+            return best.username;
+        }, 12);
+    }
+    return centerPile.reduce((best, card) => {
+        if (Math.floor(card.card / 13) === firstCardSuit) {
+            return card.card % 13 < best ? card.card % 13 : best;
+        }
+        return best.username;
+    }, 12);
 }
