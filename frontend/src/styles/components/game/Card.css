@@ -1,9 +1,10 @@
 .card-parent {
+  width: var(--card-w, 75px);
+  height: var(--card-h, 105px);
   padding: 2px;
-  height: 105px;
-  width: 75px;
   border-radius: 12px;
   background-color: rgb(11, 51, 251);
+  flex: 0 0 auto;
 }
 
 .card-base {
@@ -29,18 +30,18 @@
 
 .card-red {
   font-weight: 600;
-  font-size: 10px;
+  font-size: clamp(8px, 1vw, 10px);
   color: red;
 }
 
 .card-black {
   font-weight: 600;
-  font-size: 10px;
+  font-size: clamp(8px, 1vw, 10px);
   color: rgb(0, 0, 0);
 }
 
 .card-left img {
-  width: 7px;
+  width: clamp(6px, 0.8vw, 7px);
 }
 
 .card-right {
@@ -57,7 +58,7 @@
 }
 
 .card-right img {
-  width: 7px;
+  width: clamp(6px, 0.8vw, 7px);
 }
 
 .card-middle {
@@ -69,5 +70,5 @@
 }
 
 .card-middle img {
-  width: 12px;
+  width: clamp(9px, 1.3vw, 12px);
 }

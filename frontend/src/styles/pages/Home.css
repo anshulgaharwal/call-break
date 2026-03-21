@@ -11,3 +11,10 @@
     height: 100%;
     padding: 15px;
 }
+
+.show-page.show-page-game {
+    display: block;
+    height: 100vh;
+    padding: 0;
+    overflow: hidden;
+}

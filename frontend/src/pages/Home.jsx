@@ -28,7 +28,7 @@ const Home = () => {
             <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
           )}
         </div>
-        <div className="show-page">
+        <div className={`show-page ${activeTab === 5 ? "show-page-game" : ""}`}>
           {activeTab === 0 && <Invitations key={"0"} setCurrRoomId={setCurrRoomId} setActiveTab={setActiveTab} />}
           {activeTab === 1 && (
             <Room
