@@ -8,7 +8,6 @@ import roomRoutes from "./routes/roomRoutes.js";
 import invitationRoutes from "./routes/invitationRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 import { connectDB } from "./config/database.js";
-import Room from "./models/Room.js";
 connectDB();
 
 const app = express();
@@ -50,42 +49,6 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     console.log(`Socket ${socket.id} joined room ${roomId}`);
   });
-
-  socket.on("play-card", async ({ roomId, username, card }) => {
-  try {
-    const room = await Room.findOne({ id: roomId });
-    if (!room) return;
-
-    const players = room.users;
-    const currentPlayer = players[room.turnIndex];
-
-    if (currentPlayer !== username) {
-      return;
-    }
-
-    const hand = room.hands.get(username) || [];
-
-    room.hands.set(
-      username,
-      hand.filter((c) => c !== card)
-    );
-
-    room.centerPile.push({ username, card });
-
-    room.turnIndex = (room.turnIndex + 1) % players.length;
-
-    await room.save();
-
-    io.to(roomId).emit("card-played", {
-      hands: Object.fromEntries(room.hands),
-      centerPile: room.centerPile,
-      turnIndex: room.turnIndex,
-    });
-  } catch (err) {
-    console.error("play-card error:", err);
-  }
-});
-
 
   socket.on("disconnect", () => {
     console.log("Socket disconnected:", socket.id);

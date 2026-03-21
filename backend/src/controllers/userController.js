@@ -11,10 +11,17 @@ export const register = async (req, res) => {
       });
     }
 
-    const userExits = await User.findOne({ email });
-    if (userExits) {
+    const existingEmailUser = await User.findOne({ email });
+    if (existingEmailUser) {
       return res.status(409).json({
-        message: "User already exits, Sign in instead",
+        message: "Email already registered, sign in instead",
+      });
+    }
+
+    const existingUsernameUser = await User.findOne({ username });
+    if (existingUsernameUser) {
+      return res.status(409).json({
+        message: "Username already taken",
       });
     }
 
@@ -46,6 +53,20 @@ export const register = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("register error:", err);
+
+    if (err.code === 11000) {
+      const duplicateField = Object.keys(err.keyPattern || {})[0];
+      const message =
+        duplicateField === "username"
+          ? "Username already taken"
+          : duplicateField === "email"
+            ? "Email already registered, sign in instead"
+            : "Account already exists";
+
+      return res.status(409).json({ message });
+    }
+
     res.status(500).json({
       message: "Sign up failed, try again later",
     });

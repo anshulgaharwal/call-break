@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:5000/api";
 const ROOM_URL = `${API_URL}/room`;
+const GAME_URL = "http://localhost:5000/game";
 
 // login
 export const login = async (email, password) => {
@@ -318,7 +319,7 @@ export const deleteInvitation = async (invitationId) => {
 export const startGame = async (roomId) => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${ROOM_URL}/start`, {
+  const res = await fetch(`${GAME_URL}/start`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -333,16 +334,16 @@ export const startGame = async (roomId) => {
 };
 
 
-export const distributeCards = async (roomId) => {
+export const submitBid = async (roomId, bid) => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch("http://localhost:5000/game/distribute", {
+  const res = await fetch(`${GAME_URL}/bid`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ roomId }),
+    body: JSON.stringify({ roomId, bid }),
   });
 
   const data = await res.json();
@@ -354,13 +355,31 @@ export const distributeCards = async (roomId) => {
 export const playCard = async (roomId, card) => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${ROOM_URL}/play`, {
+  const res = await fetch(`${GAME_URL}/play`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ roomId, card }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message);
+  return data;
+};
+
+
+export const nextRound = async (roomId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${GAME_URL}/next-round`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ roomId }),
   });
 
   const data = await res.json();

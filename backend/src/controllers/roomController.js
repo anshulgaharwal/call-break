@@ -1,9 +1,8 @@
 // TODO: Room controller logic
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
 import Room from "../models/Room.js";
 import crypto from "crypto";
+import { serializeRoomState } from "../services/gameService.js";
 
 const generateRoomId = () => {
   return crypto.randomBytes(3).toString("hex").toUpperCase();
@@ -74,14 +73,21 @@ export const join = async (req, res) => {
       });
     }
 
-    room.users.push(req.user.username);
-    await room.save();
+    if (!room.users.includes(req.user.username)) {
+      room.users.push(req.user.username);
+      await room.save();
+    }
 
     return res.status(200).json({
       requiredPassword: false,
       roomId: room.id,
     });
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Failed to join room",
+    });
+  }
 };
 
 export const deleteRoom = async (req, res) => {
@@ -128,14 +134,7 @@ export const getRoomDetails = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      roomId: room.id,
-      admin: room.admin,
-      users: room.users,
-      maxPlayers: 4,
-      currentPlayers: room.users.length,
-      gameStarted: room.gameStarted,
-    });
+    res.status(200).json(serializeRoomState(room));
   } catch (err) {
     console.error(err);
     res.status(500).json({
@@ -150,6 +149,12 @@ export const verifyPassword = async (req, res) => {
     const username = req.user.username;
 
     const room = await Room.findOne({ id: roomId });
+
+    if (!room) {
+      return res.status(404).json({
+        message: "Room not found",
+      });
+    }
 
     const isMatch = await bcrypt.compare(password, room.password);
 
@@ -214,31 +219,3 @@ export const removePlayer = async (req, res) => {
     }
 };
 
-
-export const startGame = async (req, res) => {
-  try {
-    const { roomId } = req.body;
-    const username = req.user.username;
-
-    const room = await Room.findOne({ id: roomId });
-
-    if (!room) {
-      return res.status(404).json({ message: "Room not found" });
-    }
-
-    if (room.admin !== username) {
-      return res.status(403).json({ message: "Only admin can start the game" });
-    }
-
-    if (room.users.length !== 4) {
-      return res.status(400).json({ message: "Exactly 4 players required" });
-    }
-
-    room.gameStarted = true;
-    await room.save();
-
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to start game" });
-  }
-};
